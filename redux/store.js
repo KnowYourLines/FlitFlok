@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import eulaReducer from "./eulaSlice";
 export const store = configureStore({
-  reducer: { user: userReducer },
+  reducer: { eula: eulaReducer },
 });
