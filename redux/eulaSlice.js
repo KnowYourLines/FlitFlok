@@ -10,14 +10,14 @@ export const eulaSlice = createSlice({
   name: "eula", // This is the name of the slice, we will later use this name to access the slice from the store
   initialState: initialState, // This is the initial state of the slice
   reducers: {
-    agree: (state, action) => {
+    agreeEula: (state, action) => {
       state.agreed = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { agree } = eulaSlice.actions;
+export const { agreeEula } = eulaSlice.actions;
 
 // We export the reducer function so that it can be added to the store
 export default eulaSlice.reducer;

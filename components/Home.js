@@ -3,14 +3,14 @@ import { StyleSheet, Text, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { auth } from "../firebaseConfig.js";
-import { agree } from "../redux/eulaSlice.js";
+import { agreeEula } from "../redux/eulaSlice.js";
 
 export default function Home() {
   const eula = useSelector((state) => state.eula.agreed);
   const dispatch = useDispatch();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      dispatch(agree(true));
+      dispatch(agreeEula(true));
     } else {
       signInAnonymously(auth);
     }
