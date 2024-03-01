@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // This is the initial state of the slice
 const initialState = {
-  agreed: false,
+  agreed: true,
 };
 
 export const eulaSlice = createSlice({
