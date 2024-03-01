@@ -2,6 +2,7 @@ import { Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { auth } from "../firebaseConfig.js";
 import { agreeEula } from "../redux/eula.js";
+import * as Linking from "expo-linking";
 
 export default function EULA() {
   const eula = useSelector((state) => state.eula.agreed);
@@ -12,7 +13,13 @@ export default function EULA() {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            You must agree to the End User License Agreement
+            To continue, you must agree to the{" "}
+            <Text
+              style={{ color: "blue" }}
+              onPress={() => Linking.openURL("https://flitflok.com/eula.html")}
+            >
+              End User License Agreement
+            </Text>
           </Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
