@@ -7,10 +7,21 @@ import { agreeEula } from "../redux/eulaSlice.js";
 
 export default function Home() {
   const eula = useSelector((state) => state.eula.agreed);
+  const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      dispatch(agreeEula(true));
+      // dispatch(agreeEula(true));
+      user.getIdToken(true).then(async (token) => {
+        let response = await fetch(`${backendUrl}/eula-agreed/`, {
+          method: "GET",
+          headers: new Headers({
+            Authorization: token,
+          }),
+        });
+        response = await response.json();
+        console.log(response);
+      });
     } else {
       signInAnonymously(auth);
     }
