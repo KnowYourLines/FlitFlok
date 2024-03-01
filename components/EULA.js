@@ -3,42 +3,43 @@ import { useSelector, useDispatch } from "react-redux";
 import { auth } from "../firebaseConfig.js";
 import { agreeEula } from "../redux/eula.js";
 
-const EULA = () => {
+export default function EULA() {
   const eula = useSelector((state) => state.eula.agreed);
+  const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" transparent={true} visible={!eula}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>EULA</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                auth.currentUser.getIdToken(true).then(async (token) => {
-                  const response = await fetch(`${backendUrl}/eula-agreed/`, {
-                    method: "PATCH",
-                    headers: new Headers({
-                      Authorization: token,
-                      "Content-Type": "application/json",
-                    }),
-                    body: JSON.stringify({
-                      agreed_to_eula: true,
-                    }),
-                  });
-                  const ResponseJson = await response.json();
-                  dispatch(agreeEula(ResponseJson.agreed_to_eula));
+    <Modal animationType="slide" transparent={true} visible={!eula}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>
+            You must agree to the End User License Agreement
+          </Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => {
+              auth.currentUser.getIdToken(true).then(async (token) => {
+                const response = await fetch(`${backendUrl}/eula-agreed/`, {
+                  method: "PATCH",
+                  headers: new Headers({
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                  }),
+                  body: JSON.stringify({
+                    agreed_to_eula: true,
+                  }),
                 });
-              }}
-            >
-              <Text style={styles.textStyle}>Agree</Text>
-            </Pressable>
-          </View>
+                const ResponseJson = await response.json();
+                dispatch(agreeEula(ResponseJson.agreed_to_eula));
+              });
+            }}
+          >
+            <Text style={styles.textStyle}>Agree</Text>
+          </Pressable>
         </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -80,5 +81,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-export default EULA;
