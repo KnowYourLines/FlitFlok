@@ -37,6 +37,7 @@ export default function Page() {
               });
             });
           }}
+          disabled={!authToken}
         />
       </View>
     </View>
