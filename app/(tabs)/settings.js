@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
+import Button from "../../components/Button.js";
 
 export default function Page() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.title}>Hello World</Text>
-        <Text style={styles.subtitle}>This is the settings page of your app.</Text>
+        <Text style={styles.title}>Hello</Text>
+        <Text style={styles.subtitle}>You are anonymous.</Text>
+        <Button title={"Delete Account"} />
       </View>
     </View>
   );
@@ -26,9 +28,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 64,
     fontWeight: "bold",
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 36,
     color: "#38434D",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
