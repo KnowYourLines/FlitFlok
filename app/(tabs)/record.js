@@ -83,7 +83,6 @@ export default function Page() {
             resizeMode="contain"
             onPlaybackStatusUpdate={(status) => {
               if (status.didJustFinish) {
-                setIsPlaying(false);
                 videoRef.current.stopAsync();
               }
             }}
@@ -130,18 +129,8 @@ const styles = StyleSheet.create({
   },
   videoPreview: {
     width: "100%",
-    height: 300,
+    height: "80%", // Adjust the height here to make the video preview bigger
     marginTop: 20,
-  },
-  playPauseButton: {
-    marginTop: 20,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  playPauseButtonText: {
-    color: "white",
-    fontSize: 16,
   },
   deleteButton: {
     marginTop: 20,
