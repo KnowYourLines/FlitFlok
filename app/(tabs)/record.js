@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 
 export default function Page() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
+  const [micStatus, requestMicPermission] = Camera.useMicrophonePermissions();
   const [cameraRef, setCameraRef] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState(null);
@@ -13,17 +20,16 @@ export default function Page() {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+      if (camStatus && !camStatus.granted && camStatus.canAskAgain) {
+        await requestCamPermission();
+      }
+      if (micStatus && !micStatus.granted && micStatus.canAskAgain) {
+        await requestMicPermission();
+      }
     })();
-  }, []);
+  }, [camStatus, micStatus]);
 
   const handleRecordButton = async () => {
-    if (!hasPermission) {
-      alert("Camera permission is not granted");
-      return;
-    }
-
     if (cameraRef) {
       if (!isRecording) {
         setIsRecording(true);
@@ -46,12 +52,29 @@ export default function Page() {
     setShowCamera(true); // Switch back to camera view after deleting video
   };
 
-  if (hasPermission === null) {
+  const openAppSettings = () => {
+    Linking.openURL("app-settings:");
+  };
+
+  if (!camStatus || !micStatus) {
     return <View />;
   }
 
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  if (
+    (!camStatus.granted && !camStatus.canAskAgain) ||
+    (!micStatus.granted && !micStatus.canAskAgain)
+  ) {
+    return (
+      <View style={styles.messageContainer}>
+        <Text>Access to camera and microphone is required to record video</Text>
+        <TouchableOpacity
+          onPress={openAppSettings}
+          style={styles.settingsButton}
+        >
+          <Text style={styles.settingsButtonText}>Open Settings</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -100,6 +123,11 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
+  messageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
   },
@@ -139,6 +167,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   deleteText: {
+    color: "white",
+    fontSize: 16,
+  },
+  settingsButton: {
+    marginTop: 20,
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+  },
+  settingsButtonText: {
     color: "white",
     fontSize: 16,
   },
