@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Page() {
   const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
@@ -90,9 +93,15 @@ export default function Page() {
               style={styles.recordButton}
               onPress={handleRecordButton}
             >
-              <Text style={styles.recordText}>
-                {isRecording ? "Stop" : "Record"}
-              </Text>
+              {isRecording ? (
+                <FontAwesome name="stop-circle" size={42} color="white" />
+              ) : (
+                <MaterialCommunityIcons
+                  name="record-rec"
+                  size={42}
+                  color={"white"}
+                />
+              )}
             </TouchableOpacity>
           </View>
         </Camera>
@@ -114,7 +123,11 @@ export default function Page() {
             style={styles.deleteButton}
             onPress={handleDeleteButton}
           >
-            <Text style={styles.deleteText}>Delete</Text>
+            <MaterialCommunityIcons
+              name="delete-forever"
+              size={42}
+              color="white"
+            />
           </TouchableOpacity>
         </View>
       )}
@@ -143,12 +156,9 @@ const styles = StyleSheet.create({
   recordButton: {
     alignSelf: "flex-end",
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "red",
     borderRadius: 50,
     padding: 20,
-  },
-  recordText: {
-    fontSize: 20,
   },
   videoPreviewContainer: {
     flex: 1,
