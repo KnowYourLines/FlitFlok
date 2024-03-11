@@ -33,7 +33,7 @@ export default function Page() {
     if (cameraRef) {
       if (!isRecording) {
         setIsRecording(true);
-        const videoRecordPromise = cameraRef.recordAsync();
+        const videoRecordPromise = cameraRef.recordAsync({ maxDuration: 120 });
         if (videoRecordPromise) {
           const data = await videoRecordPromise;
           setVideoUri(data.uri);
