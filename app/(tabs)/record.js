@@ -10,7 +10,6 @@ import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Page() {
   const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
