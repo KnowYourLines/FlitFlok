@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
 import { auth } from "../../firebaseConfig.js";
@@ -55,6 +55,13 @@ export default function Page() {
           <Text style={styles.subtitle}>
             A verification email was sent to {user.email}
           </Text>
+          <Button
+            title={"Resend verification email"}
+            color="#2196F3"
+            onPress={() => {
+              sendEmailVerification(user);
+            }}
+          />
         </View>
       )}
     </View>
