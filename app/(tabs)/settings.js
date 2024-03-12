@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "expo-router";
@@ -17,7 +17,7 @@ export default function Page() {
   });
   return (
     <View style={styles.container}>
-      {user && user.email ? (
+      {user && user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>{user.email}</Text>
@@ -41,11 +41,20 @@ export default function Page() {
             }}
           />
         </View>
-      ) : (
+      )}
+      {user && user.isAnonymous && (
+        <View style={styles.main}>
+          <Text style={styles.title}>Hello {`${user.isAnonymous}`}</Text>
+          <Text style={styles.subtitle}>You are anonymous.</Text>
+          <SignIn updateUser={setUser}></SignIn>
+        </View>
+      )}
+      {user && user.email && !user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
-          <Text style={styles.subtitle}>You are anonymous.</Text>
-          <SignIn></SignIn>
+          <Text style={styles.subtitle}>
+            A verification email was sent to {user.email}
+          </Text>
         </View>
       )}
     </View>

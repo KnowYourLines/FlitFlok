@@ -1,3 +1,4 @@
+import React from "react";
 import { Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { auth } from "../firebaseConfig.js";

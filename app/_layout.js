@@ -1,3 +1,4 @@
+import React from "react";
 import { Stack } from "expo-router/stack";
 import NoInternet from "../components/NoInternet.js";
 import { store } from "../redux/store.js";
