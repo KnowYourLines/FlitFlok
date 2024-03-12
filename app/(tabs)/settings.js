@@ -4,42 +4,50 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
 import { auth } from "../../firebaseConfig.js";
+import SignIn from "../../components/SignIn.js";
 
 export default function Page() {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const router = useRouter();
-  const [authToken, setAuthToken] = useState(null);
+  const [user, setUser] = useState(null);
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      user.getIdToken(true).then((token) => {
-        setAuthToken(token);
-      });
+      setUser(user);
     }
   });
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Hello</Text>
-        <Text style={styles.subtitle}>You are anonymous.</Text>
-        <Button
-          title={"Delete Account"}
-          onPress={() => {
-            auth.signOut().then(() => {
-              fetch(`${backendUrl}/delete-account/`, {
-                method: "DELETE",
-                headers: new Headers({
-                  Authorization: authToken,
-                }),
-              }).then((response) => {
-                if (response.status == 204) {
-                  router.replace("/");
-                }
+      {user && user.email ? (
+        <View style={styles.main}>
+          <Text style={styles.title}>Hello</Text>
+          <Text style={styles.subtitle}>{user.email}</Text>
+          <Button
+            title={"Delete Account"}
+            onPress={() => {
+              auth.signOut().then(() => {
+                user.getIdToken(true).then((token) => {
+                  fetch(`${backendUrl}/delete-account/`, {
+                    method: "DELETE",
+                    headers: new Headers({
+                      Authorization: token,
+                    }),
+                  }).then((response) => {
+                    if (response.status == 204) {
+                      router.replace("/");
+                    }
+                  });
+                });
               });
-            });
-          }}
-          disabled={!authToken}
-        />
-      </View>
+            }}
+          />
+        </View>
+      ) : (
+        <View style={styles.main}>
+          <Text style={styles.title}>Hello</Text>
+          <Text style={styles.subtitle}>You are anonymous.</Text>
+          <SignIn></SignIn>
+        </View>
+      )}
     </View>
   );
 }
