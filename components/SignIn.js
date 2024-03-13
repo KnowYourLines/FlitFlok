@@ -80,7 +80,7 @@ export default function SignIn({ updateUser }) {
             style={styles.textToggle}
             onPress={() => setToggleSignUp(!toggleSignUp)}
           >
-            {"No account? Sign Up"}
+            {"Want a full account? Sign Up"}
           </Text>
         </View>
       )}

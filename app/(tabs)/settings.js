@@ -22,51 +22,96 @@ export default function Page() {
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>{user.email}</Text>
           <Button
-            title={"Delete Account"}
-            onPress={() => {
-              auth.signOut().then(() => {
-                user.getIdToken(true).then((token) => {
-                  fetch(`${backendUrl}/delete-account/`, {
-                    method: "DELETE",
-                    headers: new Headers({
-                      Authorization: token,
-                    }),
-                  }).then((response) => {
-                    if (response.status == 204) {
-                      router.replace("/");
-                    }
-                  });
-                });
-              });
-            }}
-          />
-          <Button
             title={"Sign Out"}
             color="#2196F3"
             onPress={() => {
-              auth.signOut();
+              auth.signOut().catch((error) => {
+                Alert.alert("Error", error.message);
+              });
             }}
           />
+          <View style={styles.footer}>
+            <Button
+              title={"Delete Account"}
+              onPress={() => {
+                auth
+                  .signOut()
+                  .then(() => {
+                    user.getIdToken(true).then((token) => {
+                      fetch(`${backendUrl}/delete-account/`, {
+                        method: "DELETE",
+                        headers: new Headers({
+                          Authorization: token,
+                        }),
+                      })
+                        .then((response) => {
+                          if (response.status == 204) {
+                            router.replace("/");
+                          }
+                        })
+                        .catch((error) => {
+                          Alert.alert("Error", error.message);
+                        });
+                    });
+                  })
+                  .catch((error) => {
+                    Alert.alert("Error", error.message);
+                  });
+              }}
+            />
+          </View>
         </View>
       )}
       {user && user.isAnonymous && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
-          <Text style={styles.subtitle}>You are anonymous.</Text>
+          <Text style={styles.subtitle}>This is a guest account</Text>
           <SignIn updateUser={setUser}></SignIn>
+          <View style={styles.footer}>
+            <Button
+              title={"Delete Account"}
+              onPress={() => {
+                auth
+                  .signOut()
+                  .then(() => {
+                    user.getIdToken(true).then((token) => {
+                      fetch(`${backendUrl}/delete-account/`, {
+                        method: "DELETE",
+                        headers: new Headers({
+                          Authorization: token,
+                        }),
+                      })
+                        .then((response) => {
+                          if (response.status == 204) {
+                            router.replace("/");
+                          }
+                        })
+                        .catch((error) => {
+                          Alert.alert("Error", error.message);
+                        });
+                    });
+                  })
+                  .catch((error) => {
+                    Alert.alert("Error", error.message);
+                  });
+              }}
+            />
+          </View>
         </View>
       )}
       {user && user.email && !user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>
-            Verification email sent to {user.email}.
+            Verification email sent to {user.email}
           </Text>
           <Button
             title={"Continue to sign in"}
             color="#2196F3"
             onPress={() => {
-              auth.signOut();
+              auth.signOut().catch((error) => {
+                Alert.alert("Error", error.message);
+              });
             }}
           />
           <Text
@@ -85,6 +130,36 @@ export default function Page() {
           >
             {"Didn't get it? Resend."}
           </Text>
+          <View style={styles.footer}>
+            <Button
+              title={"Delete Account"}
+              onPress={() => {
+                auth
+                  .signOut()
+                  .then(() => {
+                    user.getIdToken(true).then((token) => {
+                      fetch(`${backendUrl}/delete-account/`, {
+                        method: "DELETE",
+                        headers: new Headers({
+                          Authorization: token,
+                        }),
+                      })
+                        .then((response) => {
+                          if (response.status == 204) {
+                            router.replace("/");
+                          }
+                        })
+                        .catch((error) => {
+                          Alert.alert("Error", error.message);
+                        });
+                    });
+                  })
+                  .catch((error) => {
+                    Alert.alert("Error", error.message);
+                  });
+              }}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -92,7 +167,12 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
+  footer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   container: {
+    marginTop: "10%",
     flex: 1,
     alignItems: "center",
     padding: 24,

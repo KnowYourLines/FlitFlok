@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
@@ -22,7 +22,9 @@ export default function Page() {
         dispatch(agreeEula(ResponseJson.agreed_to_eula));
       });
     } else {
-      signInAnonymously(auth);
+      signInAnonymously(auth).catch((error) => {
+        Alert.alert("Error", error.message);
+      });
     }
   });
   return (
