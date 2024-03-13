@@ -44,7 +44,7 @@ export default function Page() {
       )}
       {user && user.isAnonymous && (
         <View style={styles.main}>
-          <Text style={styles.title}>Hello {`${user.isAnonymous}`}</Text>
+          <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>You are anonymous.</Text>
           <SignIn updateUser={setUser}></SignIn>
         </View>
@@ -53,7 +53,7 @@ export default function Page() {
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>
-            A verification email was sent to {user.email}
+            Verification email sent to {user.email}
           </Text>
           <Button
             title={"Resend verification email"}
@@ -62,6 +62,9 @@ export default function Page() {
               sendEmailVerification(user);
             }}
           />
+          <Text style={styles.textToggle} onPress={() => auth.signOut()}>
+            {"Wrong email address? Sign out."}
+          </Text>
         </View>
       )}
     </View>
@@ -90,5 +93,13 @@ const styles = StyleSheet.create({
     color: "#38434D",
     textAlign: "center",
     marginBottom: 20,
+  },
+  textToggle: {
+    padding: 10,
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "blue",
   },
 });

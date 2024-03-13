@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    width: "80%",
+    width: "100%",
     padding: 10,
     marginBottom: 10,
     backgroundColor: "#ffffff",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#cccccc",
+    borderColor: "black",
   },
   textToggle: {
     padding: 10,
