@@ -24,6 +24,7 @@ const styles = (color) =>
       borderRadius: 4,
       elevation: 3,
       backgroundColor: color,
+      marginBottom: "5%",
     },
     disabledButton: {
       alignItems: "center",
@@ -33,6 +34,7 @@ const styles = (color) =>
       borderRadius: 4,
       elevation: 3,
       backgroundColor: "grey",
+      marginBottom: "5%",
     },
     text: {
       fontSize: 16,

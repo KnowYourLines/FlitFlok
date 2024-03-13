@@ -40,6 +40,13 @@ export default function Page() {
               });
             }}
           />
+          <Button
+            title={"Sign Out"}
+            color="#2196F3"
+            onPress={() => {
+              auth.signOut();
+            }}
+          />
         </View>
       )}
       {user && user.isAnonymous && (
