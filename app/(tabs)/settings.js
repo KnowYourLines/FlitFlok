@@ -50,7 +50,7 @@ export default function Page() {
                           }
                         })
                         .catch((error) => {
-                          Alert.alert("Error", error.message);
+                          Alert.alert("Error", error);
                         });
                     });
                   })
@@ -87,7 +87,7 @@ export default function Page() {
                           }
                         })
                         .catch((error) => {
-                          Alert.alert("Error", error.message);
+                          Alert.alert("Error", error);
                         });
                     });
                   })
@@ -150,7 +150,7 @@ export default function Page() {
                           }
                         })
                         .catch((error) => {
-                          Alert.alert("Error", error.message);
+                          Alert.alert(error);
                         });
                     });
                   })
