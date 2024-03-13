@@ -53,17 +53,20 @@ export default function Page() {
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>
-            Verification email sent to {user.email}
+            Verification email sent to {user.email}.
           </Text>
           <Button
-            title={"Resend verification email"}
+            title={"Back to sign in"}
             color="#2196F3"
             onPress={() => {
-              sendEmailVerification(user);
+              auth.signOut();
             }}
           />
-          <Text style={styles.textToggle} onPress={() => auth.signOut()}>
-            {"Wrong email address? Sign out."}
+          <Text
+            style={styles.textToggle}
+            onPress={() => sendEmailVerification(user)}
+          >
+            {"Didn't get it? Resend."}
           </Text>
         </View>
       )}
