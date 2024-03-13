@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
@@ -71,7 +71,17 @@ export default function Page() {
           />
           <Text
             style={styles.textToggle}
-            onPress={() => sendEmailVerification(user)}
+            onPress={() => {
+              sendEmailVerification(user)
+                .then(() => {
+                  Alert.alert(
+                    "Check your spam or inbox to verify your email address."
+                  );
+                })
+                .catch((error) => {
+                  Alert.alert("Error", error.message);
+                });
+            }}
           >
             {"Didn't get it? Resend."}
           </Text>

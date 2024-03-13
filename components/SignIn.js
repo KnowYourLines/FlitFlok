@@ -8,11 +8,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebaseConfig.js";
 import Button from "../components/Button.js";
+import PasswordReset from "./PasswordReset.js";
 
 export default function SignIn({ updateUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [toggleSignUp, setToggleSignUp] = useState(false);
+  const [togglePasswordReset, setTogglePasswordReset] = useState(false);
 
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password).catch((error) => {
@@ -26,7 +28,9 @@ export default function SignIn({ updateUser }) {
     linkWithCredential(anonUser, credential)
       .then((usercred) => {
         const user = usercred.user;
-        sendEmailVerification(user);
+        sendEmailVerification(user).catch((error) => {
+          Alert.alert("Error", error.message);
+        });
         updateUser({ ...user });
       })
       .catch((error) => {
@@ -34,7 +38,13 @@ export default function SignIn({ updateUser }) {
       });
   };
 
-  return (
+  return togglePasswordReset ? (
+    <View style={styles.container}>
+      <PasswordReset
+        setTogglePasswordReset={setTogglePasswordReset}
+      ></PasswordReset>
+    </View>
+  ) : (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
@@ -62,6 +72,12 @@ export default function SignIn({ updateUser }) {
       ) : (
         <View style={styles.container}>
           <Button title="Sign In" onPress={signIn} color="#2196F3" />
+          <Text
+            style={styles.textToggle}
+            onPress={() => setTogglePasswordReset(!togglePasswordReset)}
+          >
+            {"Reset password"}
+          </Text>
           <Text
             style={styles.textToggle}
             onPress={() => setToggleSignUp(!toggleSignUp)}
