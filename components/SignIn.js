@@ -39,11 +39,9 @@ export default function SignIn({ updateUser }) {
   };
 
   return togglePasswordReset ? (
-    <View style={styles.container}>
-      <PasswordReset
-        setTogglePasswordReset={setTogglePasswordReset}
-      ></PasswordReset>
-    </View>
+    <PasswordReset
+      setTogglePasswordReset={setTogglePasswordReset}
+    ></PasswordReset>
   ) : (
     <View style={styles.container}>
       <TextInput

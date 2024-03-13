@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { View, TextInput, Alert, StyleSheet, Text } from "react-native";
 import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../firebaseConfig.js";
 import Button from "../components/Button.js";
 
 const PasswordReset = ({ setTogglePasswordReset }) => {
   const [email, setEmail] = useState("");
 
   const resetPassword = () => {
-    sendPasswordResetEmail(email)
+    sendPasswordResetEmail(auth, email)
       .then(() => {
         // Password reset email sent successfully
         Alert.alert(
           "Password Reset Email Sent",
-          "Check your email to reset your password."
+          "Check your email inbox or spam to reset your password."
         );
       })
       .catch((error) => {
@@ -30,7 +31,7 @@ const PasswordReset = ({ setTogglePasswordReset }) => {
         onChangeText={setEmail}
       />
       <Button
-        title="Send password reset"
+        title="Request password reset"
         onPress={resetPassword}
         color="#2196F3"
       />
@@ -38,7 +39,7 @@ const PasswordReset = ({ setTogglePasswordReset }) => {
         style={styles.textToggle}
         onPress={() => setTogglePasswordReset(false)}
       >
-        {"Reset your password? Sign In"}
+        {"Password changed? Sign In"}
       </Text>
     </View>
   );
