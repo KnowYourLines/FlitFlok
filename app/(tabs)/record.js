@@ -10,6 +10,9 @@ import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebaseConfig.js";
+import UnverifiedUser from "../../components/UnverifiedUser.js";
 
 export default function Page() {
   const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
@@ -18,7 +21,14 @@ export default function Page() {
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState(null);
   const [showCamera, setShowCamera] = useState(true);
+  const [user, setUser] = useState(null);
   const videoRef = useRef(null);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+    }
+  });
 
   useEffect(() => {
     (async () => {
@@ -58,8 +68,12 @@ export default function Page() {
     Linking.openURL("app-settings:");
   };
 
-  if (!camStatus || !micStatus) {
+  if (!camStatus || !micStatus || !user) {
     return <View />;
+  }
+
+  if (user && !user.emailVerified) {
+    return <UnverifiedUser></UnverifiedUser>;
   }
 
   if (

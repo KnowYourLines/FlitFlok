@@ -63,7 +63,7 @@ export default function Page() {
             Verification email sent to {user.email}.
           </Text>
           <Button
-            title={"Back to sign in"}
+            title={"Continue to sign in"}
             color="#2196F3"
             onPress={() => {
               auth.signOut();
