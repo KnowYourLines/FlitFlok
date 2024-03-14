@@ -80,7 +80,7 @@ export default function Page() {
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
-          Access to location is required show videos around you
+          Access to location is required to show videos around you
         </Text>
         <TouchableOpacity
           onPress={openAppSettings}
