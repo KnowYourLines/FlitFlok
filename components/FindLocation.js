@@ -10,8 +10,11 @@ import {
 import * as Location from "expo-location";
 import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
+import { storage } from "../firebaseConfig.js";
+import { ref, uploadBytes } from "firebase/storage";
+import * as Crypto from "expo-crypto";
 
-const FindLocation = ({ setVideoApproved }) => {
+const FindLocation = ({ setVideoApproved, videoUri }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [addresses, setAddresses] = useState([]);
   const [location, setLocation] = useState(null);
@@ -113,19 +116,42 @@ const FindLocation = ({ setVideoApproved }) => {
 
   return (
     <View style={styles.container}>
-      <Button title="Back" color={"#2196F3"} onPress={handleBackButton} />
       {location ? (
-        <View>
+        <View style={styles.messageContainer}>
           <Text
             style={styles.coords}
           >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
-          <Text style={styles.text}>Select the address (if any):</Text>
+          <Text style={styles.text}>Select address (if any):</Text>
           <FlatList
             data={addresses}
             renderItem={renderItem}
             keyExtractor={(item) => item.address}
             extraData={selectedAddress}
           />
+          <View style={styles.footer}>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Back"
+                color={"#2196F3"}
+                onPress={handleBackButton}
+              />
+              <Button
+                title={"Post"}
+                onPress={async () => {
+                  const UUID = Crypto.randomUUID();
+                  const storageRef = ref(storage, UUID);
+                  const video = await fetch(videoUri);
+                  const file = await video.blob();
+                  const metadata = {
+                    contentType: "video/mp4",
+                  };
+                  uploadBytes(storageRef, file, metadata).then((snapshot) => {
+                    console.log("Uploaded a blob or file!");
+                  });
+                }}
+              />
+            </View>
+          </View>
         </View>
       ) : (
         <Text style={styles.subtitle}>Finding your location...</Text>
@@ -135,6 +161,18 @@ const FindLocation = ({ setVideoApproved }) => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: "100%",
+    marginTop: "50%",
+  },
+  footer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   messageContainer: {
     flex: 1,
     justifyContent: "center",
@@ -180,12 +218,12 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    textAlign: "left",
+    textAlign: "center",
   },
   itemSubtitle: {
     fontSize: 18,
     color: "#38434D",
-    textAlign: "left",
+    textAlign: "center",
     marginBottom: "1%",
   },
 });

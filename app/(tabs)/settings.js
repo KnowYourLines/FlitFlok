@@ -25,9 +25,12 @@ export default function Page() {
             title={"Sign Out"}
             color="#2196F3"
             onPress={() => {
-              auth.signOut().catch((error) => {
-                Alert.alert("Error", error.message);
-              });
+              auth
+                .signOut()
+                .then(() => router.replace("/"))
+                .catch((error) => {
+                  Alert.alert("Error", error.message);
+                });
             }}
           />
           <View style={styles.footer}>
@@ -109,9 +112,12 @@ export default function Page() {
             title={"Continue to sign in"}
             color="#2196F3"
             onPress={() => {
-              auth.signOut().catch((error) => {
-                Alert.alert("Error", error.message);
-              });
+              auth
+                .signOut()
+                .then(() => router.replace("/"))
+                .catch((error) => {
+                  Alert.alert("Error", error.message);
+                });
             }}
           />
           <Text

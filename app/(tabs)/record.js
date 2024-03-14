@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera, VideoQuality } from "expo-camera";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
 import UnverifiedUser from "../../components/UnverifiedUser.js";
@@ -48,7 +48,10 @@ export default function Page() {
     if (cameraRef) {
       if (!isRecording) {
         setIsRecording(true);
-        const videoRecordPromise = cameraRef.recordAsync({ maxDuration: 120 });
+        const videoRecordPromise = cameraRef.recordAsync({
+          maxDuration: 120,
+          quality: VideoQuality["1080p"],
+        });
         if (videoRecordPromise) {
           const data = await videoRecordPromise;
           setVideoUri(data.uri);
@@ -90,7 +93,9 @@ export default function Page() {
   ) {
     return (
       <View style={styles.messageContainer}>
-        <Text style={styles.subtitle}>Access to camera and microphone is required to record video</Text>
+        <Text style={styles.subtitle}>
+          Access to camera and microphone is required to record video
+        </Text>
         <TouchableOpacity
           onPress={openAppSettings}
           style={styles.settingsButton}
@@ -127,7 +132,10 @@ export default function Page() {
           </View>
         </Camera>
       ) : videoApproved ? (
-        <FindLocation setVideoApproved={setVideoApproved}></FindLocation>
+        <FindLocation
+          setVideoApproved={setVideoApproved}
+          videoUri={videoUri}
+        ></FindLocation>
       ) : (
         <View style={styles.videoPreviewContainer}>
           <Video
@@ -147,11 +155,7 @@ export default function Page() {
               style={styles.checkmarkButton}
               onPress={handleCheckmarkButton}
             >
-              <Entypo
-                name="location"
-                size={42}
-                color="white"
-              />
+              <Entypo name="location" size={42} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.deleteButton}
