@@ -135,6 +135,7 @@ export default function Page() {
         <FindLocation
           setVideoApproved={setVideoApproved}
           videoUri={videoUri}
+          user={user}
         ></FindLocation>
       ) : (
         <View style={styles.videoPreviewContainer}>

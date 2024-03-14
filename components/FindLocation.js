@@ -6,6 +6,7 @@ import {
   Linking,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from "react-native";
 import * as Location from "expo-location";
 import Button from "./Button.js";
@@ -15,11 +16,12 @@ import { ref, uploadBytes } from "firebase/storage";
 import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 
-const FindLocation = ({ setVideoApproved, videoUri }) => {
+const FindLocation = ({ setVideoApproved, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [addresses, setAddresses] = useState([]);
   const [location, setLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const router = useRouter();
   useEffect(() => {
     (async () => {
@@ -147,7 +149,44 @@ const FindLocation = ({ setVideoApproved, videoUri }) => {
                     contentType: "video/mp4",
                   };
                   uploadBytes(storageRef, file, metadata).then((snapshot) => {
-                    router.replace("/");
+                    user.getIdToken(true).then((token) => {
+                      fetch(`${backendUrl}/video/`, {
+                        method: "POST",
+                        headers: new Headers({
+                          Accept: "application/json",
+                          Authorization: token,
+                          "Content-Type": "application/json",
+                        }),
+                        body: JSON.stringify({
+                          file_id: UUID,
+                          location: {
+                            type: "Point",
+                            coordinates: [
+                              -0.0333876462451904, 51.51291201050047,
+                            ],
+                          },
+                          address: selectedAddress?.address,
+                          name: selectedAddress?.name,
+                        }),
+                      })
+                        .then((response) => {
+                          if (response.status == 201) {
+                            Alert.alert("Uploaded successfully");
+                            router.replace("/");
+                          } else {
+                            response.json().then((responseData) => {
+                              Alert.alert(
+                                `${response.status} error: ${JSON.stringify(
+                                  responseData
+                                )}`
+                              );
+                            });
+                          }
+                        })
+                        .catch((error) => {
+                          Alert.alert("Error", error);
+                        });
+                    });
                   });
                 }}
               />
