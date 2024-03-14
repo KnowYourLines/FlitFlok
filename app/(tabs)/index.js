@@ -1,14 +1,39 @@
-import React from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Linking,
+  TouchableOpacity,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
 import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
+import * as Location from "expo-location";
 
 export default function Page() {
+  const [status, requestPermission] = Location.useForegroundPermissions();
+  const [location, setLocation] = useState(null);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      if (status && !status.granted && status.canAskAgain) {
+        await requestPermission();
+      }
+      if (status && status.granted) {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.BestForNavigation,
+        });
+        console.log(location);
+        setLocation(location);
+      }
+    })();
+  }, [status]);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       user.getIdToken(true).then(async (token) => {
@@ -27,12 +52,39 @@ export default function Page() {
       });
     }
   });
+  const openAppSettings = () => {
+    Linking.openURL("app-settings:");
+  };
+  if (!status) {
+    return <View />;
+  }
+
+  if (!status.granted && !status.canAskAgain) {
+    return (
+      <View style={styles.messageContainer}>
+        <Text style={styles.subtitle}>
+          Access to location is required show videos around you
+        </Text>
+        <TouchableOpacity
+          onPress={openAppSettings}
+          style={styles.settingsButton}
+        >
+          <Text style={styles.settingsButtonText}>Open Settings</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <EULA />
       <View style={styles.main}>
         <Text style={styles.title}>Hello World</Text>
         <Text style={styles.subtitle}>This is the home page of your app.</Text>
+        {location && (
+          <Text
+            style={styles.subtitle}
+          >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
+        )}
       </View>
     </View>
   );
@@ -57,5 +109,22 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 36,
     color: "#38434D",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  messageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  settingsButton: {
+    marginTop: 20,
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+  },
+  settingsButtonText: {
+    color: "white",
+    fontSize: 16,
   },
 });
