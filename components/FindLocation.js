@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import Button from "./Button.js";
+import { Fontisto } from "@expo/vector-icons";
 
 const FindLocation = ({ setVideoApproved }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -61,16 +62,32 @@ const FindLocation = ({ setVideoApproved }) => {
     Linking.openURL("app-settings:");
   };
 
+  const toggleItemSelection = (item) => {
+    if (selectedAddress && selectedAddress.address === item.address) {
+      setSelectedAddress(null);
+    } else {
+      setSelectedAddress(item);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={[
-        styles.item,
-        item.address === selectedAddress?.address && styles.selectedAddress,
-      ]}
-      onPress={() => setSelectedAddress(item)}
+      style={styles.item}
+      onPress={() => toggleItemSelection(item)}
     >
-      <Text style={styles.itemText}>{item.name}</Text>
-      <Text style={styles.itemText}>{item.address}</Text>
+      <Text style={styles.itemTitle}>
+        {selectedAddress && selectedAddress.address === item.address && (
+          <Fontisto name="checkbox-active" size={28} color="black" />
+        )}
+        {selectedAddress && selectedAddress.address !== item.address && (
+          <Fontisto name="checkbox-passive" size={28} color="black" />
+        )}
+        {!selectedAddress && (
+          <Fontisto name="checkbox-passive" size={28} color="black" />
+        )}{" "}
+        {item.name}
+      </Text>
+      <Text style={styles.itemSubtitle}>{item.address}</Text>
     </TouchableOpacity>
   );
 
@@ -138,26 +155,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
   },
-  backButton: {
-    backgroundColor: "#2196F3",
-    padding: 10,
-    borderRadius: 5,
-  },
   item: {
     padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#f9c2ff',
-    borderRadius: 5,
+    marginBottom: "1%",
+    borderRadius: "1%",
   },
-  itemText: {
+  itemTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "left",
+  },
+  itemSubtitle: {
     fontSize: 18,
-  },
-  selectedItem: {
-    backgroundColor: '#64b5f6',
-  },
-  selectedText: {
-    marginTop: 20,
-    fontSize: 20,
+    color: "#38434D",
+    textAlign: "left",
+    marginBottom: "1%",
   },
 });
 
