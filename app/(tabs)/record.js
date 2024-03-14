@@ -10,9 +10,11 @@ import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { Entypo } from '@expo/vector-icons';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
 import UnverifiedUser from "../../components/UnverifiedUser.js";
+import FindLocation from "../../components/FindLocation.js";
 
 export default function Page() {
   const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
@@ -21,6 +23,7 @@ export default function Page() {
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState(null);
   const [showCamera, setShowCamera] = useState(true);
+  const [videoApproved, setVideoApproved] = useState(false);
   const [user, setUser] = useState(null);
   const videoRef = useRef(null);
 
@@ -60,8 +63,13 @@ export default function Page() {
   };
 
   const handleDeleteButton = () => {
+    setVideoApproved(false);
     setVideoUri(null);
     setShowCamera(true); // Switch back to camera view after deleting video
+  };
+
+  const handleCheckmarkButton = () => {
+    setVideoApproved(true);
   };
 
   const openAppSettings = () => {
@@ -82,7 +90,7 @@ export default function Page() {
   ) {
     return (
       <View style={styles.messageContainer}>
-        <Text>Access to camera and microphone is required to record video</Text>
+        <Text style={styles.subtitle}>Access to camera and microphone is required to record video</Text>
         <TouchableOpacity
           onPress={openAppSettings}
           style={styles.settingsButton}
@@ -118,6 +126,8 @@ export default function Page() {
             </TouchableOpacity>
           </View>
         </Camera>
+      ) : videoApproved ? (
+        <FindLocation setVideoApproved={setVideoApproved}></FindLocation>
       ) : (
         <View style={styles.videoPreviewContainer}>
           <Video
@@ -132,16 +142,28 @@ export default function Page() {
               }
             }}
           />
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={handleDeleteButton}
-          >
-            <MaterialCommunityIcons
-              name="delete-forever"
-              size={42}
-              color="white"
-            />
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.checkmarkButton}
+              onPress={handleCheckmarkButton}
+            >
+              <Entypo
+                name="location"
+                size={42}
+                color="white"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={handleDeleteButton}
+            >
+              <MaterialCommunityIcons
+                name="delete-forever"
+                size={42}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -157,6 +179,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  subtitle: {
+    fontSize: 36,
+    color: "#38434D",
+    textAlign: "center",
+    marginBottom: 20,
+  },
   camera: {
     flex: 1,
   },
@@ -165,6 +193,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "center",
+    gap: "100%",
   },
   recordButton: {
     alignSelf: "flex-end",
@@ -181,13 +210,21 @@ const styles = StyleSheet.create({
   videoPreview: {
     width: "100%",
     height: "80%", // Adjust the height here to make the video preview bigger
-    marginTop: 20,
+    marginTop: "15%",
+  },
+  checkmarkButton: {
+    marginTop: "5%",
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: "5%",
   },
   deleteButton: {
-    marginTop: 20,
+    marginTop: "5%",
     backgroundColor: "red",
     padding: 10,
     borderRadius: 5,
+    marginBottom: "5%",
   },
   deleteText: {
     color: "white",
