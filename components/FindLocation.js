@@ -115,12 +115,20 @@ const FindLocation = ({ setVideoApproved }) => {
     <View style={styles.container}>
       <Button title="Back" color={"#2196F3"} onPress={handleBackButton} />
       {location ? (
-        <FlatList
-          data={addresses}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.address}
-          extraData={selectedAddress}
-        />
+        <View>
+          <Text
+            style={styles.coords}
+          >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
+          <Text style={styles.text}>
+            Select the address (if any) of your post:
+          </Text>
+          <FlatList
+            data={addresses}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.address}
+            extraData={selectedAddress}
+          />
+        </View>
       ) : (
         <Text style={styles.subtitle}>Finding your location...</Text>
       )}
@@ -144,6 +152,16 @@ const styles = StyleSheet.create({
     color: "#38434D",
     textAlign: "center",
     marginBottom: 20,
+  },
+  coords: {
+    fontSize: 18,
+    color: "#38434D",
+    textAlign: "center",
+  },
+  text: {
+    fontSize: 24,
+    color: "#38434D",
+    textAlign: "center",
   },
   settingsButton: {
     marginTop: 20,
