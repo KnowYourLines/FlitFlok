@@ -119,9 +119,7 @@ const FindLocation = ({ setVideoApproved }) => {
           <Text
             style={styles.coords}
           >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
-          <Text style={styles.text}>
-            Select the address (if any) of your post:
-          </Text>
+          <Text style={styles.text}>Select the address (if any):</Text>
           <FlatList
             data={addresses}
             renderItem={renderItem}
@@ -162,6 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#38434D",
     textAlign: "center",
+    fontWeight: "bold",
   },
   settingsButton: {
     marginTop: 20,
