@@ -23,6 +23,7 @@ export default function Page() {
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState(null);
   const [showCamera, setShowCamera] = useState(true);
+  const [showRecord, setShowRecord] = useState(false);
   const [videoApproved, setVideoApproved] = useState(false);
   const [user, setUser] = useState(null);
   const videoRef = useRef(null);
@@ -44,23 +45,23 @@ export default function Page() {
     })();
   }, [camStatus, micStatus]);
 
-  const handleRecordButton = async () => {
+  const handleRecordButton = () => {
     if (cameraRef) {
       if (!isRecording) {
         setIsRecording(true);
-        const videoRecordPromise = cameraRef.recordAsync({
-          maxDuration: 120,
-          quality: VideoQuality["1080p"],
-        });
-        if (videoRecordPromise) {
-          const data = await videoRecordPromise;
-          setVideoUri(data.uri);
-          setIsRecording(false);
-          setShowCamera(false); // Switch to video preview after recording
-        }
+        cameraRef
+          .recordAsync({
+            maxDuration: 120,
+            quality: VideoQuality["1080p"],
+          })
+          .then((data) => {
+            setVideoUri(data.uri);
+            setIsRecording(false);
+            setShowRecord(false);
+            setShowCamera(false); // Switch to video preview after recording
+          });
       } else {
         cameraRef.stopRecording();
-        setIsRecording(false);
       }
     }
   };
@@ -110,26 +111,31 @@ export default function Page() {
     <View style={styles.container}>
       {showCamera ? (
         <Camera
+          onCameraReady={() => {
+            setShowRecord(true);
+          }}
           style={styles.camera}
           type={Camera.Constants.Type.back}
           ref={(ref) => setCameraRef(ref)}
         >
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.recordButton}
-              onPress={handleRecordButton}
-            >
-              {isRecording ? (
-                <FontAwesome name="stop-circle" size={42} color="white" />
-              ) : (
-                <MaterialCommunityIcons
-                  name="record-rec"
-                  size={42}
-                  color={"white"}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
+          {showRecord && (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.recordButton}
+                onPress={handleRecordButton}
+              >
+                {isRecording ? (
+                  <FontAwesome name="stop-circle" size={42} color="white" />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="record-rec"
+                    size={42}
+                    color={"white"}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </Camera>
       ) : videoApproved ? (
         <FindLocation
