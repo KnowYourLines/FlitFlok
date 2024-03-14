@@ -13,13 +13,14 @@ import { Fontisto } from "@expo/vector-icons";
 import { storage } from "../firebaseConfig.js";
 import { ref, uploadBytes } from "firebase/storage";
 import * as Crypto from "expo-crypto";
+import { useRouter } from "expo-router";
 
 const FindLocation = ({ setVideoApproved, videoUri }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [addresses, setAddresses] = useState([]);
   const [location, setLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     (async () => {
       if (status && !status.granted && status.canAskAgain) {
@@ -146,7 +147,7 @@ const FindLocation = ({ setVideoApproved, videoUri }) => {
                     contentType: "video/mp4",
                   };
                   uploadBytes(storageRef, file, metadata).then((snapshot) => {
-                    console.log("Uploaded a blob or file!");
+                    router.replace("/");
                   });
                 }}
               />
