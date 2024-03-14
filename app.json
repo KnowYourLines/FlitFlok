@@ -28,7 +28,27 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "$(PRODUCT_NAME) uses your camera to film videos for posts",
+          "microphonePermission": "$(PRODUCT_NAME) uses your microphone to record audio when filming and play audio when watching",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "$(PRODUCT_NAME) uses your microphone to record audio when filming and play audio when watching"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) saves videos you post with your location and finds videos filmed near you"
+        }
+      ]
     ],
     "scheme": "flitflok"
   }

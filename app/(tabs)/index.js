@@ -96,13 +96,12 @@ export default function Page() {
       <EULA />
       <View style={styles.main}>
         <Text style={styles.title}>Hello World</Text>
-        <Text style={styles.subtitle}>This is the home page of your app.</Text>
         {location && (
           <Text
             style={styles.subtitle}
           >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
         )}
-        <Text>Current state is: {appStateVisible}</Text>
+        <Text style={styles.subtitle}>Current state is: {appStateVisible}</Text>
       </View>
     </View>
   );
