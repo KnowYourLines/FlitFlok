@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   Alert,
   Linking,
   TouchableOpacity,
+  AppState,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
@@ -15,23 +16,39 @@ import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
 
 export default function Page() {
-  const [status, requestPermission] = Location.useForegroundPermissions();
-  const [location, setLocation] = useState(null);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [status, requestPermission] = Location.useForegroundPermissions();
+  const [location, setLocation] = useState(null);
+
   useEffect(() => {
-    (async () => {
+    const getLocation = () => {
       if (status && !status.granted && status.canAskAgain) {
-        await requestPermission();
+        requestPermission();
       }
       if (status && status.granted) {
-        const location = await Location.getCurrentPositionAsync({
+        Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.BestForNavigation,
-        });
-        console.log(location);
-        setLocation(location);
+        }).then((location) => setLocation(location));
       }
-    })();
+    };
+    getLocation();
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        getLocation();
+      }
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, [status]);
 
   onAuthStateChanged(auth, (user) => {
@@ -85,6 +102,7 @@ export default function Page() {
             style={styles.subtitle}
           >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
         )}
+        <Text>Current state is: {appStateVisible}</Text>
       </View>
     </View>
   );
