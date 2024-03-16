@@ -51,7 +51,7 @@ export default function Page() {
         setIsRecording(true);
         cameraRef
           .recordAsync({
-            maxDuration: 120,
+            maxDuration: 30,
             quality: VideoQuality["1080p"],
           })
           .then((data) => {
