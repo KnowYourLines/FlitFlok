@@ -7,14 +7,16 @@ export default function UnverifiedUser() {
   const router = useRouter();
   return (
     <View style={styles.container}>
-      <Text style={styles.subtitle}>Sign in with verified email address to post</Text>
+      <Text style={styles.subtitle}>
+        Sign in with verified email address to post
+      </Text>
       <Button
-            title={"Go to sign in"}
-            onPress={() => {
-              router.replace("/settings");
-            }}
-            color={"#2196F3"}
-          />
+        title={"Go to sign in"}
+        onPress={() => {
+          router.replace("/settings");
+        }}
+        color={"#2196F3"}
+      />
     </View>
   );
 }

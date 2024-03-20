@@ -56,32 +56,30 @@ export default function Page() {
   useEffect(() => {
     if (user && location) {
       user.getIdToken(true).then(async (token) => {
-        if (user && location) {
-          const response = await fetch(
-            `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`,
-            {
-              method: "GET",
-              headers: new Headers({
-                Authorization: token,
-              }),
-            }
-          );
-          const ResponseJson = await response.json();
-          if (response.status != 200) {
-            Alert.alert(
-              `${response.status} error: ${JSON.stringify(ResponseJson)}`
-            );
+        const response = await fetch(
+          `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`,
+          {
+            method: "GET",
+            headers: new Headers({
+              Authorization: token,
+            }),
           }
-          const videos = await Promise.all(
-            ResponseJson.features.map(async (video) => {
-              const downloadUrl = await getDownloadURL(
-                ref(storage, video.properties.file_id)
-              );
-              return { ...video, downloadUrl: downloadUrl };
-            })
+        );
+        const ResponseJson = await response.json();
+                if (response.status != 200) {
+          Alert.alert(
+            `${response.status} error: ${JSON.stringify(ResponseJson)}`
           );
-          setVideos(videos);
         }
+        const videos = await Promise.all(
+          ResponseJson.features.map(async (video) => {
+            const downloadUrl = await getDownloadURL(
+              ref(storage, video.properties.file_id)
+            );
+            return { ...video, downloadUrl: downloadUrl };
+          })
+        );
+        setVideos(videos);
       });
     }
   }, [user, location]);
