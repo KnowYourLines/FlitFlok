@@ -46,7 +46,7 @@ export default function Page() {
       }
       if (status && status.granted) {
         Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation,
+          accuracy: Location.Accuracy.Balanced,
         }).then((location) => setLocation(location));
       }
     };

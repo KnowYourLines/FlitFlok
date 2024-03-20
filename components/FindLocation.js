@@ -30,7 +30,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
       }
       if (status && status.granted) {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation,
+          accuracy: Location.Accuracy.Balanced,
         });
         setLocation(location);
         const locationAddresses = await Location.reverseGeocodeAsync({
