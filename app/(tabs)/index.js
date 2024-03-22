@@ -10,7 +10,7 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
 import { agreeEula } from "../../redux/eula.js";
@@ -21,6 +21,7 @@ import { storage } from "../../firebaseConfig.js";
 import { ref, getDownloadURL } from "firebase/storage";
 
 export default function Page() {
+  const eula = useSelector((state) => state.eula.agreed);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const screenHeight = Dimensions.get("window").height;
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ export default function Page() {
           }
         );
         const ResponseJson = await response.json();
-                if (response.status != 200) {
+        if (response.status != 200) {
           Alert.alert(
             `${response.status} error: ${JSON.stringify(ResponseJson)}`
           );
@@ -128,7 +129,7 @@ export default function Page() {
   return (
     <View style={styles.container}>
       <EULA />
-      {videos && (
+      {eula && videos && (
         <FlatList
           data={videos}
           renderItem={({ item, index }) => (
