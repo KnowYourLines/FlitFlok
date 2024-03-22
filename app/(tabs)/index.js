@@ -126,6 +126,17 @@ export default function Page() {
       </View>
     );
   }
+
+  if (!videos) {
+    return (
+      <View style={styles.messageContainer}>
+        <Text style={styles.subtitle}>
+          Finding videos posted around you...
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <EULA />
@@ -145,6 +156,37 @@ export default function Page() {
           viewabilityConfigCallbackPairs={
             viewabilityConfigCallbackPairs.current
           }
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            const lastVideo = videos[videos.length - 1];
+            console.log(lastVideo);
+            user.getIdToken(true).then(async (token) => {
+              const response = await fetch(
+                `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`,
+                {
+                  method: "GET",
+                  headers: new Headers({
+                    Authorization: token,
+                  }),
+                }
+              );
+              const ResponseJson = await response.json();
+              if (response.status != 200) {
+                Alert.alert(
+                  `${response.status} error: ${JSON.stringify(ResponseJson)}`
+                );
+              }
+              const newVideos = await Promise.all(
+                ResponseJson.features.map(async (video) => {
+                  const downloadUrl = await getDownloadURL(
+                    ref(storage, video.properties.file_id)
+                  );
+                  return { ...video, downloadUrl: downloadUrl };
+                })
+              );
+              setVideos(videos.concat(newVideos));
+            });
+          }}
         />
       )}
     </View>
