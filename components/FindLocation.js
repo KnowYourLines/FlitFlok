@@ -172,6 +172,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                         .then((response) => {
                           if (response.status == 201) {
                             Alert.alert("Uploaded successfully");
+                            router.replace("/");
                           } else {
                             response.json().then((responseData) => {
                               Alert.alert(
