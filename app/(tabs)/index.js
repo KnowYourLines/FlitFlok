@@ -204,6 +204,11 @@ const Item = ({ item, shouldPlay }) => {
       video.current.setPositionAsync(0);
     }
   }, [shouldPlay]);
+
+  const handleButtonPress = (item) => {
+    // Handle button press logic here
+    console.log("Button pressed for item:", item);
+  };
   return (
     <Pressable
       onPress={() =>
@@ -222,6 +227,15 @@ const Item = ({ item, shouldPlay }) => {
           useNativeControls={false}
           onPlaybackStatusUpdate={(status) => setStatus(() => status)}
         />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={() => handleButtonPress(item)}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Your Button</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Pressable>
   );
@@ -231,9 +245,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  buttonContainer: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
   videoContainer: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+    position: "relative",
   },
   video: {
     width: "100%",
