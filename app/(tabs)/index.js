@@ -130,9 +130,7 @@ export default function Page() {
   if (!videos) {
     return (
       <View style={styles.messageContainer}>
-        <Text style={styles.subtitle}>
-          Finding videos posted around you...
-        </Text>
+        <Text style={styles.subtitle}>Finding videos posted around you...</Text>
       </View>
     );
   }
@@ -159,7 +157,6 @@ export default function Page() {
           onEndReachedThreshold={0.5}
           onEndReached={() => {
             const lastVideo = videos[videos.length - 1];
-            console.log(lastVideo);
             user.getIdToken(true).then(async (token) => {
               const response = await fetch(
                 `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`,
