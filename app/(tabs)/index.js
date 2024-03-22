@@ -127,7 +127,7 @@ export default function Page() {
     );
   }
 
-  if (!videos) {
+  if (videos.length == 0) {
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>Finding videos posted around you...</Text>
