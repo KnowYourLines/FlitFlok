@@ -19,6 +19,7 @@ import * as Location from "expo-location";
 import { Video, ResizeMode } from "expo-av";
 import { storage } from "../../firebaseConfig.js";
 import { ref, getDownloadURL } from "firebase/storage";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 export default function Page() {
   const eula = useSelector((state) => state.eula.agreed);
@@ -40,17 +41,18 @@ export default function Page() {
     { viewabilityConfig, onViewableItemsChanged },
   ]);
 
+  const getLocation = () => {
+    if (status && !status.granted && status.canAskAgain) {
+      requestPermission();
+    }
+    if (status && status.granted) {
+      Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      }).then((location) => setLocation(location));
+    }
+  };
+
   useEffect(() => {
-    const getLocation = () => {
-      if (status && !status.granted && status.canAskAgain) {
-        requestPermission();
-      }
-      if (status && status.granted) {
-        Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        }).then((location) => setLocation(location));
-      }
-    };
     getLocation();
   }, [status]);
 
@@ -142,7 +144,11 @@ export default function Page() {
         <FlatList
           data={videos}
           renderItem={({ item, index }) => (
-            <Item item={item} shouldPlay={index === currentViewableItemIndex} />
+            <Item
+              item={item}
+              shouldPlay={index === currentViewableItemIndex}
+              getLocation={getLocation}
+            />
           )}
           keyExtractor={(item) => item.id}
           pagingEnabled
@@ -190,7 +196,7 @@ export default function Page() {
   );
 }
 
-const Item = ({ item, shouldPlay }) => {
+const Item = ({ item, shouldPlay, getLocation }) => {
   const video = useRef(null);
   const [status, setStatus] = useState(null);
 
@@ -205,10 +211,6 @@ const Item = ({ item, shouldPlay }) => {
     }
   }, [shouldPlay]);
 
-  const handleButtonPress = (item) => {
-    // Handle button press logic here
-    console.log("Button pressed for item:", item);
-  };
   return (
     <Pressable
       onPress={() =>
@@ -228,14 +230,19 @@ const Item = ({ item, shouldPlay }) => {
           onPlaybackStatusUpdate={(status) => setStatus(() => status)}
         />
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => handleButtonPress(item)}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Your Button</Text>
-          </TouchableOpacity>
-        </View>
+        {status && !status.isPlaying && (
+          <View style={styles.buttonContainer}>
+            <View style={styles.topContainer}>
+              <TouchableOpacity
+                onPress={() => getLocation()}
+                style={styles.button}
+              >
+                <MaterialIcons name="my-location" size={42} color="white" />
+              </TouchableOpacity>
+            </View>
+            <AntDesign name="playcircleo" size={120} color="white" />
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -251,6 +258,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: "100%",
+  },
+  topContainer: {
+    position: "absolute",
+    justifyContent: "top",
+    marginTop: "185%",
   },
   button: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -290,5 +302,9 @@ const styles = StyleSheet.create({
   settingsButtonText: {
     color: "white",
     fontSize: 16,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
