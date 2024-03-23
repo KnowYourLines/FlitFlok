@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "center",
-    gap: "100%",
+    gap: 100,
     marginTop: "50%",
   },
   footer: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   item: {
     padding: 10,
     marginBottom: "1%",
-    borderRadius: "1%",
+    borderRadius: 5,
   },
   itemTitle: {
     fontSize: 24,
