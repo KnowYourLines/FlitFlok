@@ -10,5 +10,22 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  buttonContainer: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  topContainer: {
+    position: "absolute",
+    justifyContent: "top",
+    marginTop: "185%",
+  },
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 5,
+  },
 });
 export default styles;

@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   Linking,
-  } from "react-native";
+} from "react-native";
 import { Camera, VideoQuality } from "expo-camera";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";

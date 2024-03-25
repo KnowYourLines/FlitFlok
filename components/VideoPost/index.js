@@ -6,7 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, TouchableOpacity } from "react-native";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import styles from "./styles";
 
 /**
@@ -113,6 +114,22 @@ export const VideoPost = forwardRef(({ item }, parentRef) => {
           source={{ uri: item.downloadUrl }}
           onPlaybackStatusUpdate={(status) => setStatus(status)}
         />
+        {status &&
+          !status.isPlaying &&
+          !status.isBuffering &&
+          status.isLoaded && (
+            <View style={styles.buttonContainer}>
+              <View style={styles.topContainer}>
+                <TouchableOpacity
+                  onPress={() => getLocation()}
+                  style={styles.button}
+                >
+                  <MaterialIcons name="my-location" size={42} color="white" />
+                </TouchableOpacity>
+              </View>
+              <AntDesign name="playcircleo" size={120} color="white" />
+            </View>
+          )}
       </View>
     </Pressable>
   );
