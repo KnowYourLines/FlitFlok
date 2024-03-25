@@ -20,6 +20,7 @@ import { Video, ResizeMode } from "expo-av";
 import { storage } from "../../firebaseConfig.js";
 import { ref, getDownloadURL } from "firebase/storage";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import VideoPost from "../../components/VideoPost";
 
 export default function Page() {
   const eula = useSelector((state) => state.eula.agreed);
@@ -30,16 +31,42 @@ export default function Page() {
   const [location, setLocation] = useState(null);
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [currentViewableItemIndex, setCurrentViewableItemIndex] = useState(0);
-  const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
-  const onViewableItemsChanged = ({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      setCurrentViewableItemIndex(viewableItems[0].index ?? 0);
-    }
+  const mediaRefs = useRef([]);
+
+  /**
+   * Called any time a new post is shown when a user scrolls
+   * the FlatList, when this happens we should start playing
+   * the post that is viewable and stop all the others
+   */
+  const onViewableItemsChanged = useRef(({ changed }) => {
+    changed.forEach((element) => {
+      const cell = mediaRefs.current[element.key];
+      if (cell) {
+        if (element.isViewable) {
+          cell.play();
+        } else {
+          cell.stop();
+        }
+      }
+    });
+  });
+  /**
+   * renders the item shown in the FlatList
+   *
+   * @param {Object} item object of the post
+   * @param {Integer} index position of the post in the FlatList
+   * @returns
+   */
+  const renderItem = ({ item, index }) => {
+    return (
+      <View style={{ height: screenHeight, backgroundColor: "black" }}>
+        <VideoPost
+          item={item}
+          ref={(VideoPostRef) => (mediaRefs.current[item.id] = VideoPostRef)}
+        />
+      </View>
+    );
   };
-  const viewabilityConfigCallbackPairs = useRef([
-    { viewabilityConfig, onViewableItemsChanged },
-  ]);
 
   const getLocation = () => {
     if (status && !status.granted && status.canAskAgain) {
@@ -143,24 +170,22 @@ export default function Page() {
       {eula && videos && (
         <FlatList
           data={videos}
-          renderItem={({ item, index }) => (
-            <Item
-              item={item}
-              shouldPlay={index === currentViewableItemIndex}
-              getLocation={getLocation}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          pagingEnabled
+          windowSize={4}
+          initialNumToRender={2}
+          maxToRenderPerBatch={2}
           removeClippedSubviews
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 0,
+          }}
+          renderItem={renderItem}
+          pagingEnabled
+          keyExtractor={(item) => item.id}
           horizontal={false}
           snapToInterval={screenHeight}
           snapToAlignment={"center"}
           decelerationRate={"fast"}
           showsVerticalScrollIndicator={false}
-          viewabilityConfigCallbackPairs={
-            viewabilityConfigCallbackPairs.current
-          }
+          onViewableItemsChanged={onViewableItemsChanged.current}
           onEndReachedThreshold={0.5}
           onEndReached={() => {
             const lastVideo = videos[videos.length - 1];
