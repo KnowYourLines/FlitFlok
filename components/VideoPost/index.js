@@ -4,8 +4,9 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import styles from "./styles";
 
 /**
@@ -16,6 +17,7 @@ import styles from "./styles";
  * can manage the play status of the video.
  */
 export const VideoPost = forwardRef(({ item }, parentRef) => {
+  const [status, setStatus] = useState(null);
   const ref = useRef(null);
   useImperativeHandle(parentRef, () => ({
     play,
@@ -96,14 +98,23 @@ export const VideoPost = forwardRef(({ item }, parentRef) => {
   };
 
   return (
-    <Video
-      ref={ref}
-      style={styles.video}
-      resizeMode={ResizeMode.COVER}
-      shouldPlay={false}
-      isLooping
-      source={{ uri: item.downloadUrl }}
-    />
+    <Pressable
+      onPress={() =>
+        status.isPlaying ? ref.current?.pauseAsync() : ref.current?.playAsync()
+      }
+    >
+      <View style={styles.videoContainer}>
+        <Video
+          ref={ref}
+          style={styles.video}
+          resizeMode={ResizeMode.COVER}
+          shouldPlay={status?.isPlaying}
+          isLooping
+          source={{ uri: item.downloadUrl }}
+          onPlaybackStatusUpdate={(status) => setStatus(status)}
+        />
+      </View>
+    </Pressable>
   );
 });
 
