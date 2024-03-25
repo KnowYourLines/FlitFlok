@@ -32,6 +32,7 @@ export default function Page() {
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
   const mediaRefs = useRef([]);
+  const flatListRef = useRef(null);
 
   /**
    * Called any time a new post is shown when a user scrolls
@@ -111,6 +112,9 @@ export default function Page() {
           })
         );
         setVideos(videos);
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({ index: 0, animated: false });
+        }
       });
     }
   }, [user, location]);
@@ -170,6 +174,7 @@ export default function Page() {
       <EULA />
       {eula && videos && (
         <FlatList
+          ref={flatListRef}
           data={videos}
           windowSize={4}
           initialNumToRender={2}
