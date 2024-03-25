@@ -108,7 +108,7 @@ export const VideoPost = forwardRef(({ item }, parentRef) => {
           ref={ref}
           style={styles.video}
           resizeMode={ResizeMode.COVER}
-          shouldPlay={status?.isPlaying}
+          shouldPlay={false}
           isLooping
           source={{ uri: item.downloadUrl }}
           onPlaybackStatusUpdate={(status) => setStatus(status)}
