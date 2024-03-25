@@ -17,7 +17,7 @@ import styles from "./styles";
  * The ref is forwarded to this component so that the parent component
  * can manage the play status of the video.
  */
-export const VideoPost = forwardRef(({ item }, parentRef) => {
+export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
   const [status, setStatus] = useState(null);
   const ref = useRef(null);
   useImperativeHandle(parentRef, () => ({
@@ -114,22 +114,16 @@ export const VideoPost = forwardRef(({ item }, parentRef) => {
           source={{ uri: item.downloadUrl }}
           onPlaybackStatusUpdate={(status) => setStatus(status)}
         />
-        {status &&
-          !status.isPlaying &&
-          !status.isBuffering &&
-          status.isLoaded && (
-            <View style={styles.buttonContainer}>
-              <View style={styles.topContainer}>
-                <TouchableOpacity
-                  onPress={() => getLocation()}
-                  style={styles.button}
-                >
-                  <MaterialIcons name="my-location" size={42} color="white" />
-                </TouchableOpacity>
-              </View>
-              <AntDesign name="playcircleo" size={120} color="white" />
+        {status && !status.isPlaying && status.isLoaded && (
+          <View style={styles.buttonContainer}>
+            <View style={styles.topContainer}>
+              <TouchableOpacity onPress={getLocation} style={styles.button}>
+                <MaterialIcons name="my-location" size={42} color="white" />
+              </TouchableOpacity>
             </View>
-          )}
+            <AntDesign name="playcircleo" size={120} color="white" />
+          </View>
+        )}
       </View>
     </Pressable>
   );
