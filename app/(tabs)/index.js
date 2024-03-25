@@ -152,6 +152,7 @@ export default function Page() {
           )}
           keyExtractor={(item) => item.id}
           pagingEnabled
+          removeClippedSubviews
           horizontal={false}
           snapToInterval={screenHeight}
           snapToAlignment={"center"}
@@ -204,10 +205,10 @@ const Item = ({ item, shouldPlay, getLocation }) => {
     if (!video.current) return;
 
     if (shouldPlay) {
-      video.current.playAsync().catch((e)=>{});
+      video.current.playAsync().catch((e) => {});
     } else {
-      video.current.pauseAsync().catch((e)=>{});
-      video.current.setPositionAsync(0).catch((e)=>{});
+      video.current.pauseAsync().catch((e) => {});
+      video.current.setPositionAsync(0).catch((e) => {});
     }
   }, [shouldPlay]);
 
