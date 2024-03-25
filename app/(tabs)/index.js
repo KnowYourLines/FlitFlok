@@ -204,10 +204,10 @@ const Item = ({ item, shouldPlay, getLocation }) => {
     if (!video.current) return;
 
     if (shouldPlay) {
-      video.current.playAsync();
+      video.current.playAsync().catch((e)=>{});
     } else {
-      video.current.pauseAsync();
-      video.current.setPositionAsync(0);
+      video.current.pauseAsync().catch((e)=>{});
+      video.current.setPositionAsync(0).catch((e)=>{});
     }
   }, [shouldPlay]);
 
