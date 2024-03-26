@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Pressable, View, TouchableOpacity } from "react-native";
+import { Pressable, View, TouchableOpacity, Text } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import styles from "./styles";
 
@@ -125,8 +125,21 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
           </View>
         )}
         <View style={styles.rightContainer}>
-          <MaterialIcons name="hide-image" size={42} color="white" />
-          <MaterialIcons name="report" size={42} color="white" />
+          <TouchableOpacity>
+            <MaterialIcons name="hide-image" size={42} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <MaterialIcons name="report" size={42} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.bottomContainer}>
+          <View style={styles.bottomTextContainer}>
+            <Text style={styles.bottomText}>5000m away</Text>
+            <Text style={styles.bottomText}>5 hours ago</Text>
+          </View>
+          <TouchableOpacity>
+            <MaterialIcons name="directions" size={42} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
     </Pressable>

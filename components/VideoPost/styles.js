@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 
 const styles = StyleSheet.create({
   videoContainer: {
@@ -22,11 +22,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     marginRight: "1%",
-    marginBottom: "8%",
+    marginBottom: Platform.OS === "ios" ? "8%" : "5%",
     gap: 35,
   },
-  verticalButton: {
-    marginTop: "1%",
+  bottomContainer: {
+    width: Dimensions.get("window").width,
+    position: "absolute",
+    bottom: 0,
+    marginBottom: Platform.OS === "ios" ? "10%" : "5%",
+    flexDirection: "row",
+    justifyContent: "left",
+    alignItems: "flex-end",
+    marginLeft: "1%",
+  },
+  bottomText: {
+    color: "white",
+    fontSize: 16,
   },
   topContainer: {
     position: "absolute",
