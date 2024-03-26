@@ -228,91 +228,9 @@ export default function Page() {
   );
 }
 
-const Item = ({ item, shouldPlay, getLocation }) => {
-  const video = useRef(null);
-  const [status, setStatus] = useState(null);
-
-  useEffect(() => {
-    if (!video.current) return;
-
-    if (shouldPlay) {
-      video.current.playAsync().catch((e) => {});
-    } else {
-      video.current.pauseAsync().catch((e) => {});
-      video.current.setPositionAsync(0).catch((e) => {});
-    }
-  }, [shouldPlay]);
-
-  return (
-    <Pressable
-      onPress={() =>
-        status.isPlaying
-          ? video.current?.pauseAsync()
-          : video.current?.playAsync()
-      }
-    >
-      <View style={styles.videoContainer}>
-        <Video
-          ref={video}
-          source={{ uri: item.downloadUrl }}
-          style={styles.video}
-          isLooping
-          resizeMode={ResizeMode.COVER}
-          useNativeControls={false}
-          onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-        />
-
-        {status && !status.isPlaying && (
-          <View style={styles.buttonContainer}>
-            <View style={styles.topContainer}>
-              <TouchableOpacity
-                onPress={() => getLocation()}
-                style={styles.button}
-              >
-                <MaterialIcons name="my-location" size={42} color="white" />
-              </TouchableOpacity>
-            </View>
-            <AntDesign name="playcircleo" size={120} color="white" />
-          </View>
-        )}
-      </View>
-    </Pressable>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  buttonContainer: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  topContainer: {
-    position: "absolute",
-    justifyContent: "top",
-    marginTop: "185%",
-  },
-  button: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  videoContainer: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-    position: "relative",
-  },
-  video: {
-    width: "100%",
-    height: "100%",
   },
   subtitle: {
     fontSize: 36,
@@ -334,9 +252,5 @@ const styles = StyleSheet.create({
   settingsButtonText: {
     color: "white",
     fontSize: 16,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
   },
 });
