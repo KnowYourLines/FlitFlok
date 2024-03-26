@@ -159,6 +159,23 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
           >
             <MaterialIcons name="report" size={42} color="white" />
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                "Block content from this user?",
+                "You will never see this post again",
+                [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                  { text: "OK", onPress: () => console.log("OK Pressed") },
+                ]
+              );
+            }}
+          >
+            <MaterialIcons name="person-off" size={42} color="white" />
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomContainer}>
           <View>
