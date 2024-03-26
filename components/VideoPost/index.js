@@ -124,6 +124,10 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
             <AntDesign name="playcircleo" size={120} color="white" />
           </View>
         )}
+        <View style={styles.rightContainer}>
+          <MaterialIcons name="hide-image" size={42} color="white" />
+          <MaterialIcons name="report" size={42} color="white" />
+        </View>
       </View>
     </Pressable>
   );
