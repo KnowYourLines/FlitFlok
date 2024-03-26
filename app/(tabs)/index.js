@@ -176,9 +176,9 @@ export default function Page() {
         <FlatList
           ref={flatListRef}
           data={videos}
-          windowSize={4}
-          initialNumToRender={2}
-          maxToRenderPerBatch={2}
+          windowSize={5}
+          initialNumToRender={5}
+          maxToRenderPerBatch={5}
           removeClippedSubviews
           viewabilityConfig={{
             itemVisiblePercentThreshold: 0,
