@@ -174,7 +174,7 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
               );
             }}
           >
-            <MaterialIcons name="person-off" size={42} color="white" />
+            <MaterialIcons name="block" size={42} color="white" />
           </TouchableOpacity>
         </View>
         <View style={styles.bottomContainer}>

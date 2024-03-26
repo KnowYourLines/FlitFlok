@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     marginRight: "1%",
-    marginBottom: Platform.OS === "ios" ? "8%" : "5%",
+    marginBottom: Platform.OS === "ios" ? "12%" : "5%",
     gap: 35,
   },
   bottomContainer: {
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   bottomText: {
     color: "white",
     fontSize: 16,
+    fontWeight: "bold",
   },
   topContainer: {
     position: "absolute",
