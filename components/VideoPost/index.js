@@ -181,7 +181,27 @@ export const VideoPost = forwardRef(
                       text: "Cancel",
                       style: "cancel",
                     },
-                    { text: "OK", onPress: () => console.log("OK Pressed") },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        user.getIdToken(true).then((token) => {
+                          fetch(`${backendUrl}/video/${item.id}/report/`, {
+                            method: "PATCH",
+                            headers: new Headers({
+                              Authorization: token,
+                            }),
+                          })
+                            .then((response) => {
+                              if (response.status == 204) {
+                                deleteVideoById(item.id);
+                              }
+                            })
+                            .catch((error) => {
+                              Alert.alert("Error", error);
+                            });
+                        });
+                      },
+                    },
                   ]
                 );
               }}
