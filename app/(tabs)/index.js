@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  Pressable,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
@@ -16,10 +15,8 @@ import { auth } from "../../firebaseConfig.js";
 import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
-import { Video, ResizeMode } from "expo-av";
 import { storage } from "../../firebaseConfig.js";
 import { ref, getDownloadURL } from "firebase/storage";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import VideoPost from "../../components/VideoPost";
 
 export default function Page() {
@@ -64,10 +61,17 @@ export default function Page() {
         <VideoPost
           getLocation={getLocation}
           item={item}
+          user={user}
+          deleteVideoById={deleteVideoById}
           ref={(VideoPostRef) => (mediaRefs.current[item.id] = VideoPostRef)}
         />
       </View>
     );
+  };
+
+  const deleteVideoById = (id) => {
+    const filteredVideos = videos.filter((video) => video.id !== id);
+    setVideos(filteredVideos);
   };
 
   const getLocation = () => {
