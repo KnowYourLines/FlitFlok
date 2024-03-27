@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { Pressable, View, TouchableOpacity, Text, Alert } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
 import styles from "./styles";
 import moment from "moment";
 
@@ -183,13 +184,31 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
         </View>
         <View style={styles.bottomContainer}>
           <View>
-            <Text style={styles.bottomText} numberOfLines={1}>{`${item.properties.distance} away`}</Text>
+            <Text
+              style={styles.bottomText}
+              numberOfLines={1}
+            >{`${item.properties.distance} away`}</Text>
             <Text style={styles.bottomText} numberOfLines={1}>
               {timestamp === "in a few seconds" ? "just now" : timestamp}
             </Text>
           </View>
           <TouchableOpacity>
-            <MaterialIcons name="directions" size={42} color="white" />
+            <MaterialIcons
+              name="directions"
+              size={42}
+              color="white"
+              onPress={() => {
+                const destination =
+                  item.properties.address ||
+                  item.properties.place_name ||
+                  `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
+                console.log(destination);
+                const url = encodeURI(
+                  `https://www.google.com/maps/dir/?api=1&destination=${destination}`
+                );
+                Linking.openURL(url);
+              }}
+            />
           </TouchableOpacity>
         </View>
       </View>
