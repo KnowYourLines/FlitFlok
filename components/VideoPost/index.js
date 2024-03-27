@@ -9,6 +9,7 @@ import React, {
 import { Pressable, View, TouchableOpacity, Text, Alert } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import styles from "./styles";
+import moment from "moment";
 
 /**
  * This component is responsible for displaying a post and play the
@@ -19,6 +20,9 @@ import styles from "./styles";
  */
 export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
   const [status, setStatus] = useState(null);
+  const [timestamp, setTimestamp] = useState(
+    moment.unix(item.properties.posted_at).fromNow()
+  );
   const ref = useRef(null);
   useImperativeHandle(parentRef, () => ({
     play,
@@ -179,8 +183,10 @@ export const VideoPost = forwardRef(({ item, getLocation }, parentRef) => {
         </View>
         <View style={styles.bottomContainer}>
           <View>
-            <Text style={styles.bottomText}>5000m away</Text>
-            <Text style={styles.bottomText}>5 hours ago</Text>
+            <Text style={styles.bottomText} numberOfLines={1}>{`${item.properties.distance} away`}</Text>
+            <Text style={styles.bottomText} numberOfLines={1}>
+              {timestamp === "in a few seconds" ? "just now" : timestamp}
+            </Text>
           </View>
           <TouchableOpacity>
             <MaterialIcons name="directions" size={42} color="white" />
