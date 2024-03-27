@@ -145,7 +145,7 @@ export default function Page() {
     }
   });
   const openAppSettings = () => {
-    Linking.openURL("app-settings:");
+    Linking.openSettings();
   };
   if (!status) {
     return <View />;

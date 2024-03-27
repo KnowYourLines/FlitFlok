@@ -65,7 +65,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
   };
 
   const openAppSettings = () => {
-    Linking.openURL("app-settings:");
+    Linking.openSettings();
   };
 
   const toggleItemSelection = (item) => {
