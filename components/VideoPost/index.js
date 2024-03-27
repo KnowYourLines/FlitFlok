@@ -20,7 +20,7 @@ import moment from "moment";
  * can manage the play status of the video.
  */
 export const VideoPost = forwardRef(
-  ({ user, item, getLocation, deleteVideoById }, parentRef) => {
+  ({ user, item, getLocation, deleteVideoByIds }, parentRef) => {
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
@@ -156,7 +156,7 @@ export const VideoPost = forwardRef(
                           })
                             .then((response) => {
                               if (response.status == 204) {
-                                deleteVideoById(item.id);
+                                deleteVideoByIds([item.id]);
                               }
                             })
                             .catch((error) => {
@@ -193,7 +193,7 @@ export const VideoPost = forwardRef(
                           })
                             .then((response) => {
                               if (response.status == 204) {
-                                deleteVideoById(item.id);
+                                deleteVideoByIds([item.id]);
                               }
                             })
                             .catch((error) => {
@@ -218,7 +218,35 @@ export const VideoPost = forwardRef(
                       text: "Cancel",
                       style: "cancel",
                     },
-                    { text: "OK", onPress: () => console.log("OK Pressed") },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        user.getIdToken(true).then((token) => {
+                          fetch(`${backendUrl}/video/${item.id}/block/`, {
+                            method: "PATCH",
+                            headers: new Headers({
+                              Authorization: token,
+                            }),
+                          })
+                            .then((response) => {
+                              response.json().then((responseData) => {
+                                if (response.status == 200) {
+                                  deleteVideoByIds(responseData);
+                                } else {
+                                  Alert.alert(
+                                    `${response.status} error: ${JSON.stringify(
+                                      responseData
+                                    )}`
+                                  );
+                                }
+                              });
+                            })
+                            .catch((error) => {
+                              Alert.alert("Error", error);
+                            });
+                        });
+                      },
+                    },
                   ]
                 );
               }}

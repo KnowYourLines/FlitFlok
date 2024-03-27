@@ -62,15 +62,17 @@ export default function Page() {
           getLocation={getLocation}
           item={item}
           user={user}
-          deleteVideoById={deleteVideoById}
+          deleteVideoByIds={deleteVideoByIds}
           ref={(VideoPostRef) => (mediaRefs.current[item.id] = VideoPostRef)}
         />
       </View>
     );
   };
 
-  const deleteVideoById = (id) => {
-    const filteredVideos = videos.filter((video) => video.id !== id);
+  const deleteVideoByIds = (ids) => {
+    const filteredVideos = videos.filter(
+      (video) => ids.indexOf(video.id) == -1
+    );
     setVideos(filteredVideos);
   };
 
