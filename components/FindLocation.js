@@ -162,7 +162,8 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                           location: {
                             type: "Point",
                             coordinates: [
-                              -0.0333876462451904, 51.51291201050047,
+                              location.coords.longitude,
+                              location.coords.latitude,
                             ],
                           },
                           address: selectedAddress?.address,
