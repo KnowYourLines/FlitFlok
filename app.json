@@ -55,7 +55,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) saves videos you post with your location and finds videos filmed near you"
+          "locationWhenInUsePermission": "$(PRODUCT_NAME) saves videos you post with your location and finds videos filmed near you",
+          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) saves videos you post with your location and finds videos filmed near you",
+          "locationAlwaysPermission": "$(PRODUCT_NAME) saves videos you post with your location and finds videos filmed near you"
         }
       ]
     ],
