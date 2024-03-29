@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 const FindLocation = ({ setVideoApproved, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [addresses, setAddresses] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [location, setLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
@@ -140,7 +141,9 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
               />
               <Button
                 title={"Post"}
+                disabled={isUploading}
                 onPress={async () => {
+                  setIsUploading(true);
                   const UUID = Crypto.randomUUID();
                   const storageRef = ref(storage, UUID);
                   const video = await fetch(videoUri);
