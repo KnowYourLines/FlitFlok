@@ -140,7 +140,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                 onPress={handleBackButton}
               />
               <Button
-                title={"Post"}
+                title={isUploading ? "Uploading..." : "Post"}
                 disabled={isUploading}
                 onPress={async () => {
                   setIsUploading(true);
@@ -151,8 +151,8 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                   const metadata = {
                     contentType: "video/mp4",
                   };
-                  uploadBytesResumable(storageRef, file, metadata).then(
-                    (snapshot) => {
+                  uploadBytesResumable(storageRef, file, metadata)
+                    .then((snapshot) => {
                       user.getIdToken(true).then((token) => {
                         fetch(`${backendUrl}/video/`, {
                           method: "POST",
@@ -181,19 +181,24 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                             } else {
                               response.json().then((responseData) => {
                                 Alert.alert(
-                                  `${response.status} error: ${JSON.stringify(
-                                    responseData
-                                  )}`
+                                  `Upload failed! ${
+                                    response.status
+                                  } error: ${JSON.stringify(responseData)}`
                                 );
+                                setIsUploading(false);
                               });
                             }
                           })
                           .catch((error) => {
-                            Alert.alert("Error", error);
+                            Alert.alert(`Upload failed! ${error}`);
+                            setIsUploading(false);
                           });
                       });
-                    }
-                  );
+                    })
+                    .catch((error) => {
+                      Alert.alert(`Upload failed! ${error}`);
+                      setIsUploading(false);
+                    });
                 }}
               />
             </View>
