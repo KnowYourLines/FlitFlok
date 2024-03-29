@@ -34,29 +34,44 @@ export default function Page() {
             <Button
               title={"Delete Account"}
               onPress={() => {
-                auth
-                  .signOut()
-                  .then(() => {
-                    user.getIdToken(true).then((token) => {
-                      fetch(`${backendUrl}/delete-account/`, {
-                        method: "DELETE",
-                        headers: new Headers({
-                          Authorization: token,
-                        }),
-                      })
-                        .then((response) => {
-                          if (response.status == 204) {
-                            router.replace("/");
-                          }
-                        })
-                        .catch((error) => {
-                          Alert.alert("Error", error);
-                        });
-                    });
-                  })
-                  .catch((error) => {
-                    Alert.alert("Error", error.message);
-                  });
+                Alert.alert(
+                  "Delete all account data?",
+                  "This cannot be undone",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        auth
+                          .signOut()
+                          .then(() => {
+                            user.getIdToken(true).then((token) => {
+                              fetch(`${backendUrl}/delete-account/`, {
+                                method: "DELETE",
+                                headers: new Headers({
+                                  Authorization: token,
+                                }),
+                              })
+                                .then((response) => {
+                                  if (response.status == 204) {
+                                    router.replace("/");
+                                  }
+                                })
+                                .catch((error) => {
+                                  Alert.alert("Error", error);
+                                });
+                            });
+                          })
+                          .catch((error) => {
+                            Alert.alert("Error", error.message);
+                          });
+                      },
+                    },
+                  ]
+                );
               }}
             />
           </View>
@@ -71,29 +86,44 @@ export default function Page() {
             <Button
               title={"Delete Account"}
               onPress={() => {
-                auth
-                  .signOut()
-                  .then(() => {
-                    user.getIdToken(true).then((token) => {
-                      fetch(`${backendUrl}/delete-account/`, {
-                        method: "DELETE",
-                        headers: new Headers({
-                          Authorization: token,
-                        }),
-                      })
-                        .then((response) => {
-                          if (response.status == 204) {
-                            router.replace("/");
-                          }
-                        })
-                        .catch((error) => {
-                          Alert.alert("Error", error);
-                        });
-                    });
-                  })
-                  .catch((error) => {
-                    Alert.alert("Error", error.message);
-                  });
+                Alert.alert(
+                  "Delete all account data?",
+                  "This cannot be undone",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        auth
+                          .signOut()
+                          .then(() => {
+                            user.getIdToken(true).then((token) => {
+                              fetch(`${backendUrl}/delete-account/`, {
+                                method: "DELETE",
+                                headers: new Headers({
+                                  Authorization: token,
+                                }),
+                              })
+                                .then((response) => {
+                                  if (response.status == 204) {
+                                    router.replace("/");
+                                  }
+                                })
+                                .catch((error) => {
+                                  Alert.alert("Error", error);
+                                });
+                            });
+                          })
+                          .catch((error) => {
+                            Alert.alert("Error", error.message);
+                          });
+                      },
+                    },
+                  ]
+                );
               }}
             />
           </View>
@@ -134,29 +164,44 @@ export default function Page() {
             <Button
               title={"Delete Account"}
               onPress={() => {
-                auth
-                  .signOut()
-                  .then(() => {
-                    user.getIdToken(true).then((token) => {
-                      fetch(`${backendUrl}/delete-account/`, {
-                        method: "DELETE",
-                        headers: new Headers({
-                          Authorization: token,
-                        }),
-                      })
-                        .then((response) => {
-                          if (response.status == 204) {
-                            router.replace("/");
-                          }
-                        })
-                        .catch((error) => {
-                          Alert.alert(error);
-                        });
-                    });
-                  })
-                  .catch((error) => {
-                    Alert.alert("Error", error.message);
-                  });
+                Alert.alert(
+                  "Delete all account data?",
+                  "This cannot be undone",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        auth
+                          .signOut()
+                          .then(() => {
+                            user.getIdToken(true).then((token) => {
+                              fetch(`${backendUrl}/delete-account/`, {
+                                method: "DELETE",
+                                headers: new Headers({
+                                  Authorization: token,
+                                }),
+                              })
+                                .then((response) => {
+                                  if (response.status == 204) {
+                                    router.replace("/");
+                                  }
+                                })
+                                .catch((error) => {
+                                  Alert.alert(error);
+                                });
+                            });
+                          })
+                          .catch((error) => {
+                            Alert.alert("Error", error.message);
+                          });
+                      },
+                    },
+                  ]
+                );
               }}
             />
           </View>
