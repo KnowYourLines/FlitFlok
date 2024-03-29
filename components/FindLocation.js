@@ -12,7 +12,7 @@ import * as Location from "expo-location";
 import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
 import { storage } from "../firebaseConfig.js";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytesResumable } from "firebase/storage";
 import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 
@@ -151,47 +151,49 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                   const metadata = {
                     contentType: "video/mp4",
                   };
-                  uploadBytes(storageRef, file, metadata).then((snapshot) => {
-                    user.getIdToken(true).then((token) => {
-                      fetch(`${backendUrl}/video/`, {
-                        method: "POST",
-                        headers: new Headers({
-                          Accept: "application/json",
-                          Authorization: token,
-                          "Content-Type": "application/json",
-                        }),
-                        body: JSON.stringify({
-                          file_id: UUID,
-                          location: {
-                            type: "Point",
-                            coordinates: [
-                              location.coords.longitude,
-                              location.coords.latitude,
-                            ],
-                          },
-                          address: selectedAddress?.address,
-                          name: selectedAddress?.name,
-                        }),
-                      })
-                        .then((response) => {
-                          if (response.status == 201) {
-                            Alert.alert("Uploaded successfully");
-                            router.replace("/");
-                          } else {
-                            response.json().then((responseData) => {
-                              Alert.alert(
-                                `${response.status} error: ${JSON.stringify(
-                                  responseData
-                                )}`
-                              );
-                            });
-                          }
+                  uploadBytesResumable(storageRef, file, metadata).then(
+                    (snapshot) => {
+                      user.getIdToken(true).then((token) => {
+                        fetch(`${backendUrl}/video/`, {
+                          method: "POST",
+                          headers: new Headers({
+                            Accept: "application/json",
+                            Authorization: token,
+                            "Content-Type": "application/json",
+                          }),
+                          body: JSON.stringify({
+                            file_id: UUID,
+                            location: {
+                              type: "Point",
+                              coordinates: [
+                                location.coords.longitude,
+                                location.coords.latitude,
+                              ],
+                            },
+                            address: selectedAddress?.address,
+                            name: selectedAddress?.name,
+                          }),
                         })
-                        .catch((error) => {
-                          Alert.alert("Error", error);
-                        });
-                    });
-                  });
+                          .then((response) => {
+                            if (response.status == 201) {
+                              Alert.alert("Uploaded successfully");
+                              router.replace("/");
+                            } else {
+                              response.json().then((responseData) => {
+                                Alert.alert(
+                                  `${response.status} error: ${JSON.stringify(
+                                    responseData
+                                  )}`
+                                );
+                              });
+                            }
+                          })
+                          .catch((error) => {
+                            Alert.alert("Error", error);
+                          });
+                      });
+                    }
+                  );
                 }}
               />
             </View>
