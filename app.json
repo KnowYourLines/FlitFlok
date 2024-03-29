@@ -7,7 +7,7 @@
     "icon": "./assets/FlitFlok.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/FlitFlok.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
