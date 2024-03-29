@@ -109,7 +109,7 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      {showCamera ? (
+      {showCamera && camStatus && camStatus.granted ? (
         <Camera
           onCameraReady={() => {
             setShowRecord(true);
@@ -143,7 +143,7 @@ export default function Page() {
           videoUri={videoUri}
           user={user}
         ></FindLocation>
-      ) : (
+      ) : videoUri ? (
         <View style={styles.videoPreviewContainer}>
           <Video
             ref={videoRef}
@@ -176,6 +176,8 @@ export default function Page() {
             </TouchableOpacity>
           </View>
         </View>
+      ) : (
+        <View style={styles.container}></View>
       )}
     </View>
   );
