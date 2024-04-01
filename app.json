@@ -15,9 +15,12 @@
       "**/*"
     ],
     "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.FlitFlok",
-      "buildNumber": "3"
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +35,7 @@
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.anonymous.FlitFlok",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png",
