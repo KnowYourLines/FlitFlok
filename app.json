@@ -20,7 +20,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.FlitFlok",
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,7 +35,7 @@
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.anonymous.FlitFlok",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png",
