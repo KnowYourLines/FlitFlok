@@ -103,17 +103,25 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
   }
 
   if (!status.granted && !status.canAskAgain) {
+    Alert.alert(
+      "Access to location is required to tag where videos were submitted from",
+      "",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Open Settings",
+          onPress: openAppSettings,
+        },
+      ]
+    );
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
-          Access to location is required to tag where videos were submitted from
+          Tagging where videos were submitted from is not enabled on this device
         </Text>
-        <TouchableOpacity
-          onPress={openAppSettings}
-          style={styles.settingsButton}
-        >
-          <Text style={styles.settingsButtonText}>Open Settings</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -250,16 +258,6 @@ const styles = StyleSheet.create({
     color: "#38434D",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  settingsButton: {
-    marginTop: 20,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  settingsButtonText: {
-    color: "white",
-    fontSize: 16,
   },
   item: {
     padding: 10,

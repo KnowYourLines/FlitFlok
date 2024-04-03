@@ -5,7 +5,6 @@ import {
   View,
   Alert,
   Linking,
-  TouchableOpacity,
   FlatList,
   Dimensions,
 } from "react-native";
@@ -152,17 +151,25 @@ export default function Page() {
   }
 
   if (!status.granted && !status.canAskAgain) {
+    Alert.alert(
+      "Access to location is required to show videos around you",
+      "",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Open Settings",
+          onPress: openAppSettings,
+        },
+      ]
+    );
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
-          Access to location is required to show videos around you
+          Finding nearby videos is not enabled on this device
         </Text>
-        <TouchableOpacity
-          onPress={openAppSettings}
-          style={styles.settingsButton}
-        >
-          <Text style={styles.settingsButtonText}>Open Settings</Text>
-        </TouchableOpacity>
       </View>
     );
   }

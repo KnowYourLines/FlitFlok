@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Linking,
+  Alert,
 } from "react-native";
 import { Camera, VideoQuality } from "expo-camera";
 import { Video } from "expo-av";
@@ -92,17 +93,25 @@ export default function Page() {
     (!camStatus.granted && !camStatus.canAskAgain) ||
     (!micStatus.granted && !micStatus.canAskAgain)
   ) {
+    Alert.alert(
+      "Access to camera and microphone is required to record video",
+      "",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Open Settings",
+          onPress: openAppSettings,
+        },
+      ]
+    );
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
-          Access to camera and microphone is required to record video
+          Video recording is not enabled on this device
         </Text>
-        <TouchableOpacity
-          onPress={openAppSettings}
-          style={styles.settingsButton}
-        >
-          <Text style={styles.settingsButtonText}>Open Settings</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -240,16 +249,6 @@ const styles = StyleSheet.create({
     marginBottom: "5%",
   },
   deleteText: {
-    color: "white",
-    fontSize: 16,
-  },
-  settingsButton: {
-    marginTop: 20,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  settingsButtonText: {
     color: "white",
     fontSize: 16,
   },
