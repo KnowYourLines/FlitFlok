@@ -260,14 +260,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  settingsButton: {
-    marginTop: 20,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  settingsButtonText: {
-    color: "white",
-    fontSize: 16,
-  },
 });
