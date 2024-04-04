@@ -104,7 +104,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
 
   if (!status.granted && !status.canAskAgain) {
     Alert.alert(
-      "Access to location is required to tag where videos were submitted from",
+      "Access to location is required to tag where videos were recorded",
       "",
       [
         {
@@ -120,7 +120,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
-          Tagging where videos were submitted from is not enabled on this device
+          Tagging where videos were recorded is not enabled on this device
         </Text>
       </View>
     );

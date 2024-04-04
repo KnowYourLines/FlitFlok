@@ -26,6 +26,7 @@ export default function Page() {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [location, setLocation] = useState(null);
   const [user, setUser] = useState(null);
+  const [locationFullyDenied, setLocationFullyDenied] = useState(false);
   const [videos, setVideos] = useState([]);
   const mediaRefs = useRef([]);
   const flatListRef = useRef(null);
@@ -151,20 +152,23 @@ export default function Page() {
   }
 
   if (!status.granted && !status.canAskAgain) {
-    Alert.alert(
-      "Access to location is required to show videos around you",
-      "",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Open Settings",
-          onPress: openAppSettings,
-        },
-      ]
-    );
+    if (!locationFullyDenied) {
+      setLocationFullyDenied(true);
+      Alert.alert(
+        "Access to location is required to show videos around you",
+        "",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Open Settings",
+            onPress: openAppSettings,
+          },
+        ]
+      );
+    }
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>

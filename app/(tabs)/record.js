@@ -27,6 +27,7 @@ export default function Page() {
   const [showRecord, setShowRecord] = useState(false);
   const [videoApproved, setVideoApproved] = useState(false);
   const [user, setUser] = useState(null);
+  const [recordingFullyDenied, setRecordingFullyDenied] = useState(false);
   const videoRef = useRef(null);
 
   onAuthStateChanged(auth, (user) => {
@@ -93,20 +94,24 @@ export default function Page() {
     (!camStatus.granted && !camStatus.canAskAgain) ||
     (!micStatus.granted && !micStatus.canAskAgain)
   ) {
-    Alert.alert(
-      "Access to camera and microphone is required to record video",
-      "",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Open Settings",
-          onPress: openAppSettings,
-        },
-      ]
-    );
+    if (!recordingFullyDenied) {
+      setRecordingFullyDenied(true);
+      Alert.alert(
+        "Access to camera and microphone is required to record video",
+        "",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Open Settings",
+            onPress: openAppSettings,
+          },
+        ]
+      );
+    }
+
     return (
       <View style={styles.messageContainer}>
         <Text style={styles.subtitle}>
