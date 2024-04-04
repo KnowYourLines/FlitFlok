@@ -17,9 +17,18 @@ export default function SignIn({ updateUser }) {
   const [togglePasswordReset, setTogglePasswordReset] = useState(false);
 
   const signIn = () => {
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      Alert.alert("Error", error.message);
-    });
+    signInWithEmailAndPassword(auth, email, password)
+      .then((usercred) => {
+        const user = usercred.user;
+        if (!user.emailVerified) {
+          sendEmailVerification(user).catch((error) => {
+            Alert.alert("Error", error.message);
+          });
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message);
+      });
   };
 
   const signUp = () => {
