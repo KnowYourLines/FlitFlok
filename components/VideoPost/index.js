@@ -134,6 +134,23 @@ export const VideoPost = forwardRef(
             </View>
           )}
           <View style={styles.rightContainer}>
+            <TouchableOpacity>
+              <MaterialIcons
+                name="directions"
+                size={42}
+                color="white"
+                onPress={() => {
+                  const destination =
+                    item.properties.address ||
+                    item.properties.place_name ||
+                    `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
+                  const url = encodeURI(
+                    `https://www.google.com/maps/dir/?api=1&destination=${destination}`
+                  );
+                  Linking.openURL(url);
+                }}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 Alert.alert(
@@ -263,24 +280,10 @@ export const VideoPost = forwardRef(
               <Text style={styles.bottomText} numberOfLines={1}>
                 {timestamp === "in a few seconds" ? "just now" : timestamp}
               </Text>
+              <Text style={styles.bottomText} numberOfLines={1}>
+                {`User: ${item.properties.creator}`}
+              </Text>
             </View>
-            <TouchableOpacity>
-              <MaterialIcons
-                name="directions"
-                size={42}
-                color="white"
-                onPress={() => {
-                  const destination =
-                    item.properties.address ||
-                    item.properties.place_name ||
-                    `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
-                  const url = encodeURI(
-                    `https://www.google.com/maps/dir/?api=1&destination=${destination}`
-                  );
-                  Linking.openURL(url);
-                }}
-              />
-            </TouchableOpacity>
           </View>
         </View>
       </Pressable>

@@ -20,7 +20,7 @@ export default function Page() {
       {user && user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
-          <Text style={styles.subtitle}>{user.email}</Text>
+          <Text style={styles.subtitle}>{user.uid}</Text>
           <Button
             title={"Sign Out"}
             color="#2196F3"
