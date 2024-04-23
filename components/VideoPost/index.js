@@ -121,7 +121,21 @@ export const VideoPost = forwardRef(
             shouldPlay={false}
             isLooping
             source={{ uri: item.downloadUrl }}
-            onPlaybackStatusUpdate={(status) => setStatus(status)}
+            onPlaybackStatusUpdate={(status) => {
+              setStatus(status);
+              if (status.didJustFinish) {
+                user.getIdToken(true).then((token) => {
+                  fetch(`${backendUrl}/video/${item.id}/watched/`, {
+                    method: "PATCH",
+                    headers: new Headers({
+                      Authorization: token,
+                    }),
+                  }).catch((error) => {
+                    Alert.alert("Error", error);
+                  });
+                });
+              }
+            }}
           />
           {status && !status.isPlaying && status.isLoaded && (
             <View style={styles.buttonContainer}>
@@ -140,6 +154,16 @@ export const VideoPost = forwardRef(
                 size={42}
                 color="white"
                 onPress={() => {
+                  user.getIdToken(true).then((token) => {
+                    fetch(`${backendUrl}/video/${item.id}/went/`, {
+                      method: "PATCH",
+                      headers: new Headers({
+                        Authorization: token,
+                      }),
+                    }).catch((error) => {
+                      Alert.alert("Error", error);
+                    });
+                  });
                   const destination =
                     item.properties.address ||
                     item.properties.place_name ||
