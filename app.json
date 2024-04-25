@@ -2,7 +2,7 @@
   "expo": {
     "name": "FlitFlok",
     "slug": "FlitFlok",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -48,7 +48,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.FlitFlok",
-      "buildNumber": "10"
+      "buildNumber": "11"
     },
     "android": {
       "adaptiveIcon": {
@@ -63,7 +63,7 @@
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.anonymous.FlitFlok",
-      "versionCode": 10
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/favicon.png",
