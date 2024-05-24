@@ -7,7 +7,7 @@ import {
   Linking,
   Alert,
 } from "react-native";
-import { Camera, VideoQuality } from "expo-camera";
+import { Camera, VideoQuality } from "expo-camera/legacy";
 import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
