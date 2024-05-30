@@ -123,18 +123,6 @@ export const VideoPost = forwardRef(
             source={{ uri: item.downloadUrl }}
             onPlaybackStatusUpdate={(status) => {
               setStatus(status);
-              if (status.didJustFinish) {
-                user.getIdToken(true).then((token) => {
-                  fetch(`${backendUrl}/video/${item.id}/watched/`, {
-                    method: "PATCH",
-                    headers: new Headers({
-                      Authorization: token,
-                    }),
-                  }).catch((error) => {
-                    Alert.alert("Error", error);
-                  });
-                });
-              }
             }}
           />
           {status && !status.isPlaying && status.isLoaded && (
