@@ -21,6 +21,7 @@ import moment from "moment";
  */
 export const VideoPost = forwardRef(
   ({ user, item, getLocation, deleteVideoByIds }, parentRef) => {
+    console.log(item);
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
@@ -285,16 +286,17 @@ export const VideoPost = forwardRef(
           </View>
           <View style={styles.bottomContainer}>
             <View>
-              <Text
-                style={styles.bottomText}
-                numberOfLines={1}
-              >{`${item.properties.distance} away`}</Text>
               <Text style={styles.bottomText} numberOfLines={1}>
-                {timestamp === "in a few seconds" ? "just now" : timestamp}
+                {`${item.properties.display_name || item.properties.creator}`}
               </Text>
               <Text style={styles.bottomText} numberOfLines={1}>
-                {`User: ${item.properties.creator}`}
+                {`#${item.properties.creator_rank} Explorer`}
               </Text>
+              <Text style={styles.bottomText} numberOfLines={1}>{`${
+                item.properties.distance
+              } away, ${
+                timestamp === "in a few seconds" ? "just now" : timestamp
+              }`}</Text>
             </View>
           </View>
         </View>
