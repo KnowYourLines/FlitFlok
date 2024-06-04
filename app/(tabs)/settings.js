@@ -10,9 +10,28 @@ export default function Page() {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [userRank, setUserRank] = useState(null);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUser(user);
+      if (user.emailVerified) {
+        user.getIdToken(true).then(async (token) => {
+          const response = await fetch(`${backendUrl}/rank/`, {
+            method: "GET",
+            headers: new Headers({
+              Authorization: token,
+            }),
+          });
+          const responseJson = await response.json();
+          if (response.status != 200) {
+            Alert.alert(
+              `${response.status} error: ${JSON.stringify(responseJson)}`
+            );
+          } else {
+            setUserRank(responseJson.rank);
+          }
+        });
+      }
     }
   });
   return (
@@ -21,6 +40,7 @@ export default function Page() {
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>{user.uid}</Text>
+          <Text style={styles.subtitle}>You are the #{userRank} explorer</Text>
           <Button
             title={"Sign Out"}
             color="#2196F3"

@@ -21,7 +21,6 @@ import moment from "moment";
  */
 export const VideoPost = forwardRef(
   ({ user, item, getLocation, deleteVideoByIds }, parentRef) => {
-    console.log(item);
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
