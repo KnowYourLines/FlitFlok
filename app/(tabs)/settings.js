@@ -11,6 +11,7 @@ export default function Page() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [userRank, setUserRank] = useState(null);
+  const [userPoints, setUserPoints] = useState(null);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUser(user);
@@ -29,6 +30,7 @@ export default function Page() {
             );
           } else {
             setUserRank(responseJson.rank);
+            setUserPoints(responseJson.points);
           }
         });
       }
@@ -40,17 +42,33 @@ export default function Page() {
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
           <Text style={styles.subtitle}>{user.uid}</Text>
-          <Text style={styles.subtitle}>You are the #{userRank} explorer</Text>
-          <Button
-            title={"Sign Out"}
-            color="#2196F3"
-            onPress={() => {
-              auth.signOut().catch((error) => {
-                Alert.alert("Error", error.message);
-              });
-            }}
-          />
+          <Text style={styles.infoText}>
+            <Text style={styles.boldText}>#{userRank}</Text> most helpful
+            explorer
+          </Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.boldText}>{userPoints} total points</Text> for
+            being helpful
+          </Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.boldText}>+10000 points</Text> for a post with
+            no posts from anyone else 1 mile around
+          </Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.boldText}>+10 points</Text> for every user who
+            posted 1 mile around when someone new requests directions to your
+            post
+          </Text>
           <View style={styles.footer}>
+            <Button
+              title={"Sign Out"}
+              color="#2196F3"
+              onPress={() => {
+                auth.signOut().catch((error) => {
+                  Alert.alert("Error", error.message);
+                });
+              }}
+            />
             <Button
               title={"Delete Account"}
               onPress={() => {
@@ -258,6 +276,18 @@ const styles = StyleSheet.create({
     color: "#38434D",
     textAlign: "center",
     marginBottom: 20,
+  },
+  infoText: {
+    fontSize: 24,
+    color: "#38434D",
+    textAlign: "left",
+    marginBottom: 20,
+  },
+  boldText: {
+    fontSize: 24,
+    color: "#38434D",
+    textAlign: "left",
+    fontWeight: "bold",
   },
   textToggle: {
     padding: 10,
