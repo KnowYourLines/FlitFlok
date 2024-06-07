@@ -14,6 +14,22 @@ export default function Page() {
   const [userRank, setUserRank] = useState(null);
   const [userPoints, setUserPoints] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [displayName, setDisplayName] = useState(null);
+
+  const getDisplayName = async (token) => {
+    const response = await fetch(`${backendUrl}/display-name/`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: token,
+      }),
+    });
+    const responseJson = await response.json();
+    if (response.status != 200) {
+      Alert.alert(`${response.status} error: ${JSON.stringify(responseJson)}`);
+    } else {
+      setDisplayName(responseJson.display_name);
+    }
+  };
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUser(user);
@@ -34,17 +50,22 @@ export default function Page() {
             setUserRank(responseJson.rank);
             setUserPoints(responseJson.points);
           }
+          await getDisplayName(token);
         });
       }
     }
   });
   return (
     <View style={styles.container}>
-      <Username showModal={showModal} setShowModal={setShowModal} />
+      <Username
+        showModal={showModal}
+        setShowModal={setShowModal}
+        getDisplayName={getDisplayName}
+      />
       {user && user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
-          <Text style={styles.subtitle}>{user.uid}</Text>
+          <Text style={styles.subtitle}>{displayName || user.uid}</Text>
           <Text style={styles.infoText}>
             <Text style={styles.boldText}>#{userRank}</Text> most helpful
             explorer
@@ -58,9 +79,9 @@ export default function Page() {
             no posts from anyone else 1 mile around
           </Text>
           <Text style={styles.infoText}>
-            <Text style={styles.boldText}>+10 points</Text> for every other user who
-            posted 1 mile around when someone new requests directions to your
-            post
+            <Text style={styles.boldText}>+10 points</Text> for every other user
+            who posted 1 mile around when someone new requests directions to
+            your post
           </Text>
           <View style={styles.footer}>
             <Button

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { auth } from "../firebaseConfig.js";
 
-export default function Username({ showModal, setShowModal }) {
+export default function Username({ showModal, setShowModal, getDisplayName }) {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const [newUsername, setNewUsername] = useState("");
   return (
@@ -31,8 +31,30 @@ export default function Username({ showModal, setShowModal }) {
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                setShowModal(false);
-                setNewUsername("");
+                auth.currentUser.getIdToken(true).then(async (token) => {
+                  const response = await fetch(`${backendUrl}/display-name/`, {
+                    method: "PATCH",
+                    headers: new Headers({
+                      Authorization: token,
+                      "Content-Type": "application/json",
+                    }),
+                    body: JSON.stringify({
+                      display_name: newUsername,
+                    }),
+                  });
+                  const responseJson = await response.json();
+                  if (response.status != 200) {
+                    Alert.alert(
+                      `${response.status} error: ${JSON.stringify(
+                        responseJson
+                      )}`
+                    );
+                  } else {
+                    await getDisplayName(token);
+                    setShowModal(false);
+                    setNewUsername("");
+                  }
+                });
               }}
             >
               <Text style={styles.textStyle}>Submit</Text>
