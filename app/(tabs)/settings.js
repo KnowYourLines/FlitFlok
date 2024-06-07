@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Alert } from "react-native";
 import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
+import Username from "../../components/Username.js";
 import { auth } from "../../firebaseConfig.js";
 import SignIn from "../../components/SignIn.js";
 
@@ -12,6 +13,7 @@ export default function Page() {
   const [user, setUser] = useState(null);
   const [userRank, setUserRank] = useState(null);
   const [userPoints, setUserPoints] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUser(user);
@@ -38,6 +40,7 @@ export default function Page() {
   });
   return (
     <View style={styles.container}>
+      <Username showModal={showModal} setShowModal={setShowModal} />
       {user && user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
@@ -55,11 +58,18 @@ export default function Page() {
             no posts from anyone else 1 mile around
           </Text>
           <Text style={styles.infoText}>
-            <Text style={styles.boldText}>+10 points</Text> for every user who
+            <Text style={styles.boldText}>+10 points</Text> for every other user who
             posted 1 mile around when someone new requests directions to your
             post
           </Text>
           <View style={styles.footer}>
+            <Button
+              title={"Change Username"}
+              color="#2196F3"
+              onPress={() => {
+                setShowModal(true);
+              }}
+            />
             <Button
               title={"Sign Out"}
               color="#2196F3"
