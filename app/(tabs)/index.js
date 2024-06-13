@@ -90,8 +90,9 @@ export default function Page() {
   }, [status]);
 
   useEffect(() => {
-    if (user && location) {
-      user.getIdToken(true).then(async (token) => {
+    (async () => {
+      if (user && location) {
+        const token = await user.getIdToken(true);
         const response = await fetch(
           `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`,
           {
@@ -103,14 +104,18 @@ export default function Page() {
         );
         const ResponseJson = await response.json();
         if (response.status != 200) {
-          Alert.alert(`${response.status} error: ${ResponseJson}`);
+          Alert.alert(
+            `${response.status} error: ${JSON.parse(
+              JSON.stringify(ResponseJson)
+            )}`
+          );
         }
         setVideos(ResponseJson.features);
         if (flatListRef.current) {
           flatListRef.current.scrollToIndex({ index: 0, animated: false });
         }
-      });
-    }
+      }
+    })();
   }, [user, location]);
 
   onAuthStateChanged(auth, (user) => {
@@ -198,24 +203,23 @@ export default function Page() {
           showsVerticalScrollIndicator={false}
           onViewableItemsChanged={onViewableItemsChanged.current}
           onEndReachedThreshold={0.5}
-          onEndReached={() => {
+          onEndReached={async () => {
             const lastVideo = videos[videos.length - 1];
-            user.getIdToken(true).then(async (token) => {
-              const response = await fetch(
-                `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`,
-                {
-                  method: "GET",
-                  headers: new Headers({
-                    Authorization: token,
-                  }),
-                }
-              );
-              const ResponseJson = await response.json();
-              if (response.status != 200) {
-                Alert.alert(`${response.status} error: ${ResponseJson}`);
+            const token = await user.getIdToken(true);
+            const response = await fetch(
+              `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`,
+              {
+                method: "GET",
+                headers: new Headers({
+                  Authorization: token,
+                }),
               }
-              setVideos(videos.concat(ResponseJson.features));
-            });
+            );
+            const ResponseJson = await response.json();
+            if (response.status != 200) {
+              Alert.alert(`${response.status} error: ${ResponseJson}`);
+            }
+            setVideos(videos.concat(ResponseJson.features));
           }}
         />
       )}
