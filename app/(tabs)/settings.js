@@ -43,9 +43,7 @@ export default function Page() {
           });
           const responseJson = await response.json();
           if (response.status != 200) {
-            Alert.alert(
-              `${response.status} error: ${responseJson}`
-            );
+            Alert.alert(`${response.status} error: ${responseJson}`);
           } else {
             setUserRank(responseJson.rank);
             setUserPoints(responseJson.points);
@@ -76,12 +74,11 @@ export default function Page() {
           </Text>
           <Text style={styles.infoText}>
             <Text style={styles.boldText}>+10000 points</Text> for a post with
-            no posts from anyone else 1 mile around
+            no posts from anyone else around
           </Text>
           <Text style={styles.infoText}>
-            <Text style={styles.boldText}>+10 points</Text> for every other user
-            who posted 1 mile around when someone new requests directions to
-            your post
+            <Text style={styles.boldText}>+10 points</Text> when someone new
+            requests directions to your post for every other poster around
           </Text>
           <View style={styles.footer}>
             <Button

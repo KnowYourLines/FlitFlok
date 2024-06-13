@@ -299,7 +299,7 @@ export const VideoPost = forwardRef(
                 {`${item.properties.display_name || item.properties.creator}`}
               </Text>
               <Text style={styles.bottomText} numberOfLines={1}>
-                {`#${item.properties.creator_rank} Explorer`}
+                {`#${item.properties.creator_rank} Most Helpful Explorer`}
               </Text>
               <Text style={styles.bottomText} numberOfLines={1}>{`${
                 item.properties.distance
