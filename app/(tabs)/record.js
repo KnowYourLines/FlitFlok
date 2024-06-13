@@ -54,7 +54,7 @@ export default function Page() {
         cameraRef
           .recordAsync({
             maxDuration: 30,
-            quality: VideoQuality["1080p"],
+            quality: VideoQuality["720p"],
           })
           .then((data) => {
             setVideoUri(data.uri);

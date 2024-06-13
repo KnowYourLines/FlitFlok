@@ -11,9 +11,6 @@ import {
 import * as Location from "expo-location";
 import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
-import { storage } from "../firebaseConfig.js";
-import { ref, uploadBytesResumable } from "firebase/storage";
-import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 
 const FindLocation = ({ setVideoApproved, videoUri, user }) => {
@@ -152,25 +149,49 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                 disabled={isUploading}
                 onPress={async () => {
                   setIsUploading(true);
-                  const UUID = Crypto.randomUUID();
-                  const storageRef = ref(storage, UUID);
-                  const video = await fetch(videoUri);
-                  const file = await video.blob();
-                  const metadata = {
-                    contentType: "video/mp4",
-                  };
-                  uploadBytesResumable(storageRef, file, metadata)
-                    .then((snapshot) => {
-                      user.getIdToken(true).then((token) => {
-                        fetch(`${backendUrl}/video/`, {
-                          method: "POST",
+                  const token = await user.getIdToken(true);
+                  const response = await fetch(`${backendUrl}/video-upload/`, {
+                    method: "GET",
+                    headers: new Headers({
+                      Authorization: token,
+                    }),
+                  });
+                  const responseJson = await response.json();
+                  if (response.status != 200) {
+                    Alert.alert(
+                      `${response.status} error: ${JSON.stringify(
+                        responseJson
+                      )}`
+                    );
+                  } else {
+                    const video = await fetch(videoUri);
+                    const file = await video.blob();
+                    const uploadUrl = responseJson.properties.url;
+                    const videoId = responseJson.properties.passthrough;
+
+                    const response = await fetch(uploadUrl, {
+                      method: "PUT",
+                      body: file,
+                      headers: { "content-type": file.type },
+                    });
+                    if (response.status != 200) {
+                      Alert.alert(
+                        `${response.status} error: ${JSON.stringify(
+                          responseJson
+                        )}`
+                      );
+                      setIsUploading(false);
+                    } else {
+                      const response = await fetch(
+                        `${backendUrl}/video/${videoId}/`,
+                        {
+                          method: "PATCH",
                           headers: new Headers({
                             Accept: "application/json",
                             Authorization: token,
                             "Content-Type": "application/json",
                           }),
                           body: JSON.stringify({
-                            file_id: UUID,
                             location: {
                               type: "Point",
                               coordinates: [
@@ -179,34 +200,78 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                               ],
                             },
                             address: selectedAddress?.address,
-                            name: selectedAddress?.name,
+                            place_name: selectedAddress?.name,
                           }),
-                        })
-                          .then((response) => {
-                            if (response.status == 201) {
-                              Alert.alert("Uploaded successfully");
-                              router.replace("/");
-                            } else {
-                              response.json().then((responseData) => {
-                                Alert.alert(
-                                  `Upload failed! ${
-                                    response.status
-                                  } error: ${JSON.stringify(responseData)}`
-                                );
-                                setIsUploading(false);
-                              });
-                            }
-                          })
-                          .catch((error) => {
-                            Alert.alert(`Upload failed! ${error}`);
-                            setIsUploading(false);
-                          });
-                      });
-                    })
-                    .catch((error) => {
-                      Alert.alert(`Upload failed! ${error}`);
-                      setIsUploading(false);
-                    });
+                        }
+                      );
+                      if (response.status == 200) {
+                        Alert.alert("Uploaded successfully");
+                        router.replace("/");
+                      } else {
+                        const responseJson = await response.json();
+                        Alert.alert(
+                          `Upload failed! ${
+                            response.status
+                          } error: ${JSON.stringify(responseJson)}`
+                        );
+                        setIsUploading(false);
+                      }
+                    }
+                  }
+                  // const storageRef = ref(storage, UUID);
+                  // const video = await fetch(videoUri);
+                  // const file = await video.blob();
+                  // const metadata = {
+                  //   contentType: "video/mp4",
+                  // };
+                  // uploadBytesResumable(storageRef, file, metadata)
+                  //   .then((snapshot) => {
+                  //     user.getIdToken(true).then((token) => {
+                  //       fetch(`${backendUrl}/video/`, {
+                  //         method: "POST",
+                  //         headers: new Headers({
+                  //           Accept: "application/json",
+                  //           Authorization: token,
+                  //           "Content-Type": "application/json",
+                  //         }),
+                  //         body: JSON.stringify({
+                  //           file_id: UUID,
+                  //           location: {
+                  //             type: "Point",
+                  //             coordinates: [
+                  //               location.coords.longitude,
+                  //               location.coords.latitude,
+                  //             ],
+                  //           },
+                  //           address: selectedAddress?.address,
+                  //           name: selectedAddress?.name,
+                  //         }),
+                  //       })
+                  //         .then((response) => {
+                  //           if (response.status == 201) {
+                  //             Alert.alert("Uploaded successfully");
+                  //             router.replace("/");
+                  //           } else {
+                  //             response.json().then((responseData) => {
+                  //               Alert.alert(
+                  //                 `Upload failed! ${
+                  //                   response.status
+                  //                 } error: ${JSON.stringify(responseData)}`
+                  //               );
+                  //               setIsUploading(false);
+                  //             });
+                  //           }
+                  //         })
+                  //         .catch((error) => {
+                  //           Alert.alert(`Upload failed! ${error}`);
+                  //           setIsUploading(false);
+                  //         });
+                  //     });
+                  //   })
+                  //   .catch((error) => {
+                  //     Alert.alert(`Upload failed! ${error}`);
+                  //     setIsUploading(false);
+                  //   });
                 }}
               />
             </View>
