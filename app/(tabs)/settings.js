@@ -25,7 +25,7 @@ export default function Page() {
     });
     const responseJson = await response.json();
     if (response.status != 200) {
-      Alert.alert(`${response.status} error: ${JSON.stringify(responseJson)}`);
+      Alert.alert(`${response.status} error: ${responseJson}`);
     } else {
       setDisplayName(responseJson.display_name);
     }
@@ -44,7 +44,7 @@ export default function Page() {
           const responseJson = await response.json();
           if (response.status != 200) {
             Alert.alert(
-              `${response.status} error: ${JSON.stringify(responseJson)}`
+              `${response.status} error: ${responseJson}`
             );
           } else {
             setUserRank(responseJson.rank);

@@ -158,11 +158,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                   });
                   const responseJson = await response.json();
                   if (response.status != 200) {
-                    Alert.alert(
-                      `${response.status} error: ${JSON.stringify(
-                        responseJson
-                      )}`
-                    );
+                    Alert.alert(`${response.status} error: ${responseJson}`);
                   } else {
                     const video = await fetch(videoUri);
                     const file = await video.blob();
@@ -175,11 +171,7 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                       headers: { "content-type": file.type },
                     });
                     if (response.status != 200) {
-                      Alert.alert(
-                        `${response.status} error: ${JSON.stringify(
-                          responseJson
-                        )}`
-                      );
+                      Alert.alert(`${response.status} error: ${responseJson}`);
                       setIsUploading(false);
                     } else {
                       const response = await fetch(
@@ -210,68 +202,12 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                       } else {
                         const responseJson = await response.json();
                         Alert.alert(
-                          `Upload failed! ${
-                            response.status
-                          } error: ${JSON.stringify(responseJson)}`
+                          `Upload failed! ${response.status} error: ${responseJson}`
                         );
                         setIsUploading(false);
                       }
                     }
                   }
-                  // const storageRef = ref(storage, UUID);
-                  // const video = await fetch(videoUri);
-                  // const file = await video.blob();
-                  // const metadata = {
-                  //   contentType: "video/mp4",
-                  // };
-                  // uploadBytesResumable(storageRef, file, metadata)
-                  //   .then((snapshot) => {
-                  //     user.getIdToken(true).then((token) => {
-                  //       fetch(`${backendUrl}/video/`, {
-                  //         method: "POST",
-                  //         headers: new Headers({
-                  //           Accept: "application/json",
-                  //           Authorization: token,
-                  //           "Content-Type": "application/json",
-                  //         }),
-                  //         body: JSON.stringify({
-                  //           file_id: UUID,
-                  //           location: {
-                  //             type: "Point",
-                  //             coordinates: [
-                  //               location.coords.longitude,
-                  //               location.coords.latitude,
-                  //             ],
-                  //           },
-                  //           address: selectedAddress?.address,
-                  //           name: selectedAddress?.name,
-                  //         }),
-                  //       })
-                  //         .then((response) => {
-                  //           if (response.status == 201) {
-                  //             Alert.alert("Uploaded successfully");
-                  //             router.replace("/");
-                  //           } else {
-                  //             response.json().then((responseData) => {
-                  //               Alert.alert(
-                  //                 `Upload failed! ${
-                  //                   response.status
-                  //                 } error: ${JSON.stringify(responseData)}`
-                  //               );
-                  //               setIsUploading(false);
-                  //             });
-                  //           }
-                  //         })
-                  //         .catch((error) => {
-                  //           Alert.alert(`Upload failed! ${error}`);
-                  //           setIsUploading(false);
-                  //         });
-                  //     });
-                  //   })
-                  //   .catch((error) => {
-                  //     Alert.alert(`Upload failed! ${error}`);
-                  //     setIsUploading(false);
-                  //   });
                 }}
               />
             </View>

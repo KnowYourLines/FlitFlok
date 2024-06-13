@@ -14,8 +14,6 @@ import { auth } from "../../firebaseConfig.js";
 import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
-import { storage } from "../../firebaseConfig.js";
-import { ref, getDownloadURL } from "firebase/storage";
 import VideoPost from "../../components/VideoPost";
 
 export default function Page() {
@@ -105,19 +103,9 @@ export default function Page() {
         );
         const ResponseJson = await response.json();
         if (response.status != 200) {
-          Alert.alert(
-            `${response.status} error: ${JSON.stringify(ResponseJson)}`
-          );
+          Alert.alert(`${response.status} error: ${ResponseJson}`);
         }
-        const videos = await Promise.all(
-          ResponseJson.features.map(async (video) => {
-            const downloadUrl = await getDownloadURL(
-              ref(storage, video.properties.file_id)
-            );
-            return { ...video, downloadUrl: downloadUrl };
-          })
-        );
-        setVideos(videos);
+        setVideos(ResponseJson.features);
         if (flatListRef.current) {
           flatListRef.current.scrollToIndex({ index: 0, animated: false });
         }
@@ -224,19 +212,9 @@ export default function Page() {
               );
               const ResponseJson = await response.json();
               if (response.status != 200) {
-                Alert.alert(
-                  `${response.status} error: ${JSON.stringify(ResponseJson)}`
-                );
+                Alert.alert(`${response.status} error: ${ResponseJson}`);
               }
-              const newVideos = await Promise.all(
-                ResponseJson.features.map(async (video) => {
-                  const downloadUrl = await getDownloadURL(
-                    ref(storage, video.properties.file_id)
-                  );
-                  return { ...video, downloadUrl: downloadUrl };
-                })
-              );
-              setVideos(videos.concat(newVideos));
+              setVideos(videos.concat(ResponseJson.features));
             });
           }}
         />

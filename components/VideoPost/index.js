@@ -120,7 +120,19 @@ export const VideoPost = forwardRef(
             resizeMode={ResizeMode.COVER}
             shouldPlay={false}
             isLooping
-            source={{ uri: item.downloadUrl }}
+            usePoster
+            posterSource={{
+              uri: `https://image.mux.com/${item.properties.playback_id}/thumbnail.png`,
+            }}
+            posterStyle={{
+              flex: 1,
+              height: "100%",
+              width: "100%",
+              resizeMode: "cover",
+            }}
+            source={{
+              uri: `https://stream.mux.com/${item.properties.playback_id}.m3u8?max_resolution=720p`,
+            }}
             onPlaybackStatusUpdate={(status) => {
               setStatus(status);
             }}
@@ -263,9 +275,7 @@ export const VideoPost = forwardRef(
                                   deleteVideoByIds(responseData);
                                 } else {
                                   Alert.alert(
-                                    `${response.status} error: ${JSON.stringify(
-                                      responseData
-                                    )}`
+                                    `${response.status} error: ${responseData}`
                                   );
                                 }
                               });

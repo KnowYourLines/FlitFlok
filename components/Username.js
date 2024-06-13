@@ -44,11 +44,7 @@ export default function Username({ showModal, setShowModal, getDisplayName }) {
                   });
                   const responseJson = await response.json();
                   if (response.status != 200) {
-                    Alert.alert(
-                      `${response.status} error: ${JSON.stringify(
-                        responseJson
-                      )}`
-                    );
+                    Alert.alert(`${response.status} error: ${responseJson}`);
                   } else {
                     await getDisplayName(token);
                     setShowModal(false);
