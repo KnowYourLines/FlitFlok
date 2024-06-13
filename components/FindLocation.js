@@ -13,7 +13,7 @@ import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-const FindLocation = ({ setVideoApproved, videoUri, user }) => {
+const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [addresses, setAddresses] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -197,8 +197,10 @@ const FindLocation = ({ setVideoApproved, videoUri, user }) => {
                         }
                       );
                       if (response.status == 200) {
-                        Alert.alert("Uploaded successfully");
-                        router.replace("/");
+                        Alert.alert(
+                          "Uploaded successfully. Post will appear after processing."
+                        );
+                        resetCamera();
                       } else {
                         const responseJson = await response.json();
                         Alert.alert(

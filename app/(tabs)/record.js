@@ -154,6 +154,7 @@ export default function Page() {
       ) : videoApproved ? (
         <FindLocation
           setVideoApproved={setVideoApproved}
+          resetCamera={handleDeleteButton}
           videoUri={videoUri}
           user={user}
         ></FindLocation>
