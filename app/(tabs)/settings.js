@@ -74,11 +74,13 @@ export default function Page() {
           </Text>
           <Text style={styles.infoText}>
             <Text style={styles.boldText}>+10000 points</Text> for a post with
-            no posts from anyone else around
+            no posts from any other users around
           </Text>
           <Text style={styles.infoText}>
-            <Text style={styles.boldText}>+10 points</Text> when someone new
-            requests directions to your post for every other poster around
+            <Text style={styles.boldText}>
+              +10 points x the number of other users around who posted
+            </Text>{" "}
+            when a new user requests directions to post
           </Text>
           <View style={styles.footer}>
             <Button
