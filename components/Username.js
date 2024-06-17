@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Modal,
   StyleSheet,
   Text,
@@ -44,7 +45,10 @@ export default function Username({ showModal, setShowModal, getDisplayName }) {
                   });
                   const responseJson = await response.json();
                   if (response.status != 200) {
-                    Alert.alert(`${response.status} error: ${responseJson}`);
+                    console.log(responseJson);
+                    Alert.alert(
+                      `${response.status} error: ${responseJson.display_name[0]}`
+                    );
                   } else {
                     await getDisplayName(token);
                     setShowModal(false);
