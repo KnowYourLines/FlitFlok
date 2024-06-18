@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "top",
     alignItems: "center",
-    top: "10%",
+    top: "7.5%",
   },
   button: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",

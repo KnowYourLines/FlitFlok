@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Alert } from "react-native";
 import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
-import Username from "../../components/Username.js";
+import ChangeUsername from "../../components/ChangeUsername.js";
 import { auth } from "../../firebaseConfig.js";
 import SignIn from "../../components/SignIn.js";
 
@@ -55,7 +55,7 @@ export default function Page() {
   });
   return (
     <View style={styles.container}>
-      <Username
+      <ChangeUsername
         showModal={showModal}
         setShowModal={setShowModal}
         getDisplayName={getDisplayName}

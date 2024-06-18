@@ -10,7 +10,11 @@ import {
 } from "react-native";
 import { auth } from "../firebaseConfig.js";
 
-export default function Username({ showModal, setShowModal, getDisplayName }) {
+export default function ChangeUsername({
+  showModal,
+  setShowModal,
+  getDisplayName,
+}) {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const [newUsername, setNewUsername] = useState("");
   return (

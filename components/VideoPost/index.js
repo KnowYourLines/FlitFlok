@@ -11,6 +11,7 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import styles from "./styles";
 import moment from "moment";
+import PurposePicker from "../PurposePicker.js";
 
 /**
  * This component is responsible for displaying a post and play the
@@ -137,7 +138,7 @@ export const VideoPost = forwardRef(
               setStatus(status);
             }}
           />
-          {status && !status.isPlaying && status.isLoaded && (
+          {status && !status.isPlaying && status.isLoaded ? (
             <View style={styles.buttonContainer}>
               <View style={styles.topContainer}>
                 <TouchableOpacity onPress={getLocation} style={styles.button}>
@@ -145,6 +146,14 @@ export const VideoPost = forwardRef(
                 </TouchableOpacity>
               </View>
               <AntDesign name="playcircleo" size={120} color="white" />
+            </View>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <View style={styles.topContainer}>
+                <TouchableOpacity>
+                  <PurposePicker />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
           <View style={styles.rightContainer}>

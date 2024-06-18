@@ -198,7 +198,7 @@ export default function Page() {
           keyExtractor={(item) => item.id}
           horizontal={false}
           snapToInterval={screenHeight}
-          snapToAlignment={"center"}
+          snapToAlignment={"top"}
           decelerationRate={"fast"}
           showsVerticalScrollIndicator={false}
           onViewableItemsChanged={onViewableItemsChanged.current}
