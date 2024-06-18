@@ -5,7 +5,7 @@ export default function PurposePicker({ purpose, setPurpose }) {
   return (
     <RNPickerSelect
       placeholder={{
-        label: purpose || "Select Location Type",
+        label: purpose || "Select Purpose of Locations",
         value: purpose || "",
       }}
       selectedValue={purpose}
