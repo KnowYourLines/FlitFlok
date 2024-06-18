@@ -7,6 +7,7 @@ import {
   Linking,
   FlatList,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
@@ -15,6 +16,7 @@ import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
 import VideoPost from "../../components/VideoPost";
+import PurposePicker from "../../components/PurposePicker.js";
 import { setPurpose } from "../../redux/reel.js";
 
 export default function Page() {
@@ -101,22 +103,23 @@ export default function Page() {
     (async () => {
       if (user && location) {
         const token = await user.getIdToken(true);
-        const response = await fetch(
-          `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`,
-          {
-            method: "GET",
-            headers: new Headers({
-              Authorization: token,
-            }),
-          }
-        );
+        let requestUrl = `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`;
+        if (purpose) {
+          requestUrl += `&purpose=${encodeURIComponent(purpose)}`;
+        }
+        const response = await fetch(requestUrl, {
+          method: "GET",
+          headers: new Headers({
+            Authorization: token,
+          }),
+        });
         const ResponseJson = await response.json();
         if (response.status != 200) {
-          Alert.alert(
-            `${response.status} error: ${JSON.parse(
-              JSON.stringify(ResponseJson)
-            )}`
-          );
+          if (ResponseJson.current_video) {
+            Alert.alert(
+              `${response.status} error: ${ResponseJson.current_video[0]}`
+            );
+          }
         }
         setVideos(ResponseJson.features);
         if (flatListRef.current) {
@@ -124,7 +127,7 @@ export default function Page() {
         }
       }
     })();
-  }, [user, location]);
+  }, [user, location, purpose]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -182,6 +185,13 @@ export default function Page() {
   if (videos.length == 0) {
     return (
       <View style={styles.messageContainer}>
+        <View style={styles.buttonContainer}>
+          <View style={styles.topContainer}>
+            <TouchableOpacity style={styles.button}>
+              <PurposePicker purpose={purpose} setPurpose={savePurpose} />
+            </TouchableOpacity>
+          </View>
+        </View>
         <Text style={styles.subtitle}>Finding videos posted around you...</Text>
       </View>
     );
@@ -249,5 +259,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  topContainer: {
+    position: "absolute",
+    justifyContent: "top",
+    alignItems: "center",
+    top: "7.5%",
+  },
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonContainer: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
 });
