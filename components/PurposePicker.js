@@ -5,7 +5,7 @@ export default function PurposePicker({ purpose, setPurpose }) {
   return (
     <RNPickerSelect
       placeholder={{
-        label: purpose || "No type of purpose selected",
+        label: purpose || "No location purpose selected",
         value: purpose || "",
       }}
       selectedValue={purpose}
@@ -23,7 +23,7 @@ export default function PurposePicker({ purpose, setPurpose }) {
         { label: "Landmarks & Attractions", value: "Landmarks & Attractions" },
         { label: "Shopping", value: "Shopping" },
         { label: "Facilities & Services", value: "Facilities & Services" },
-        { label: "No type of purpose selected", value: "" },
+        { label: "No location purpose selected", value: "" },
       ].filter((item) => item.value != purpose)}
     />
   );
