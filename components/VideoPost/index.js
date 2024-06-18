@@ -21,7 +21,10 @@ import PurposePicker from "../PurposePicker.js";
  * can manage the play status of the video.
  */
 export const VideoPost = forwardRef(
-  ({ user, item, getLocation, deleteVideoByIds }, parentRef) => {
+  (
+    { user, item, getLocation, deleteVideoByIds, purpose, savePurpose },
+    parentRef
+  ) => {
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
@@ -150,8 +153,8 @@ export const VideoPost = forwardRef(
           ) : (
             <View style={styles.buttonContainer}>
               <View style={styles.topContainer}>
-                <TouchableOpacity>
-                  <PurposePicker />
+                <TouchableOpacity style={styles.button}>
+                  <PurposePicker purpose={purpose} setPurpose={savePurpose} />
                 </TouchableOpacity>
               </View>
             </View>

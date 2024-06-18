@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import RNPickerSelect from "react-native-picker-select";
 
-export default function PurposePicker({}) {
-  const [purpose, setPurpose] = useState("");
+export default function PurposePicker({ purpose, setPurpose }) {
   return (
     <RNPickerSelect
-      placeholder={{
-        label: "Select Location Type",
-        value: null,
-      }}
+      placeholder={{ label: purpose || "Select Location Type", value: purpose }}
       selectedValue={purpose}
       onValueChange={(value) => setPurpose(value)}
       useNativeAndroidPickerStyle={false}

@@ -15,9 +15,11 @@ import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
 import VideoPost from "../../components/VideoPost";
+import { setPurpose } from "../../redux/reel.js";
 
 export default function Page() {
   const eula = useSelector((state) => state.eula.agreed);
+  const purpose = useSelector((state) => state.reel.purpose);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const screenHeight = Dimensions.get("window").height;
   const dispatch = useDispatch();
@@ -28,6 +30,10 @@ export default function Page() {
   const [videos, setVideos] = useState([]);
   const mediaRefs = useRef([]);
   const flatListRef = useRef(null);
+
+  const savePurpose = (value) => {
+    dispatch(setPurpose(value));
+  };
 
   /**
    * Called any time a new post is shown when a user scrolls
@@ -61,6 +67,8 @@ export default function Page() {
           item={item}
           user={user}
           deleteVideoByIds={deleteVideoByIds}
+          purpose={purpose}
+          savePurpose={savePurpose}
           ref={(VideoPostRef) => (mediaRefs.current[item.id] = VideoPostRef)}
         />
       </View>
