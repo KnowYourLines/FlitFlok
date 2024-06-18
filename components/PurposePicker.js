@@ -4,7 +4,10 @@ import RNPickerSelect from "react-native-picker-select";
 export default function PurposePicker({ purpose, setPurpose }) {
   return (
     <RNPickerSelect
-      placeholder={{ label: purpose || "Select Location Type", value: purpose }}
+      placeholder={{
+        label: purpose || "Select Location Type",
+        value: purpose || "",
+      }}
       selectedValue={purpose}
       onValueChange={(value) => setPurpose(value)}
       useNativeAndroidPickerStyle={false}
@@ -20,7 +23,7 @@ export default function PurposePicker({ purpose, setPurpose }) {
         { label: "Landmarks & Attractions", value: "Landmarks & Attractions" },
         { label: "Shopping", value: "Shopping" },
         { label: "Facilities & Services", value: "Facilities & Services" },
-      ]}
+      ].filter((item) => item.value != purpose)}
     />
   );
 }
