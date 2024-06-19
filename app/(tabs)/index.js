@@ -223,15 +223,16 @@ export default function Page() {
           onEndReached={async () => {
             const lastVideo = videos[videos.length - 1];
             const token = await user.getIdToken(true);
-            const response = await fetch(
-              `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`,
-              {
-                method: "GET",
-                headers: new Headers({
-                  Authorization: token,
-                }),
-              }
-            );
+            let requestUrl = `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`;
+            if (purpose) {
+              requestUrl += `&purpose=${encodeURIComponent(purpose)}`;
+            }
+            const response = await fetch(requestUrl, {
+              method: "GET",
+              headers: new Headers({
+                Authorization: token,
+              }),
+            });
             const ResponseJson = await response.json();
             if (response.status != 200) {
               Alert.alert(`${response.status} error: ${ResponseJson}`);

@@ -21,10 +21,7 @@ import PurposePicker from "../PurposePicker.js";
  * can manage the play status of the video.
  */
 export const VideoPost = forwardRef(
-  (
-    { user, item, deleteVideoByIds, purpose, savePurpose },
-    parentRef
-  ) => {
+  ({ user, item, deleteVideoByIds, purpose, savePurpose }, parentRef) => {
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
@@ -311,6 +308,11 @@ export const VideoPost = forwardRef(
               } away, ${
                 timestamp === "in a few seconds" ? "just now" : timestamp
               }`}</Text>
+              {!purpose && item.properties.location_purpose && (
+                <Text style={styles.bottomText} numberOfLines={1}>
+                  {`${item.properties.location_purpose}`}
+                </Text>
+              )}
             </View>
           </View>
         </View>
