@@ -11,7 +11,7 @@ import {
 import * as Location from "expo-location";
 import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import PurposePicker from "./PurposePicker.js";
 
 const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -19,8 +19,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [location, setLocation] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [purpose, setPurpose] = useState("");
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
-  const router = useRouter();
   useEffect(() => {
     (async () => {
       if (status && !status.granted && status.canAskAgain) {
@@ -130,13 +130,17 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
           <Text
             style={styles.coords}
           >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
-          <Text style={styles.text}>Select address (if any):</Text>
+          <Text style={styles.text}>Address (if any):</Text>
           <FlatList
             data={addresses}
             renderItem={renderItem}
             keyExtractor={(item) => item.address}
             extraData={selectedAddress}
           />
+          <Text style={styles.text}>Purpose (if any):</Text>
+          <TouchableOpacity style={styles.button}>
+            <PurposePicker purpose={purpose} setPurpose={setPurpose} />
+          </TouchableOpacity>
           <View style={styles.footer}>
             <View style={styles.buttonContainer}>
               <Button
@@ -193,6 +197,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                             },
                             address: selectedAddress?.address,
                             place_name: selectedAddress?.name,
+                            location_purpose: purpose,
                           }),
                         }
                       );
@@ -223,13 +228,19 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5,
+  },
   buttonContainer: {
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "center",
     gap: 100,
-    marginTop: "50%",
+    marginTop: "40%",
   },
   footer: {
     flex: 1,
