@@ -22,7 +22,7 @@ import PurposePicker from "../PurposePicker.js";
  */
 export const VideoPost = forwardRef(
   (
-    { user, item, getLocation, deleteVideoByIds, purpose, savePurpose },
+    { user, item, deleteVideoByIds, purpose, savePurpose },
     parentRef
   ) => {
     const [status, setStatus] = useState(null);
@@ -141,24 +141,17 @@ export const VideoPost = forwardRef(
               setStatus(status);
             }}
           />
-          {status && !status.isPlaying && status.isLoaded ? (
-            <View style={styles.buttonContainer}>
-              <View style={styles.topContainer}>
-                <TouchableOpacity onPress={getLocation} style={styles.button}>
-                  <MaterialIcons name="my-location" size={42} color="white" />
-                </TouchableOpacity>
-              </View>
+
+          <View style={styles.buttonContainer}>
+            <View style={styles.topContainer}>
+              <TouchableOpacity style={styles.button}>
+                <PurposePicker purpose={purpose} setPurpose={savePurpose} />
+              </TouchableOpacity>
+            </View>
+            {status && !status.isPlaying && status.isLoaded && (
               <AntDesign name="playcircleo" size={120} color="white" />
-            </View>
-          ) : (
-            <View style={styles.buttonContainer}>
-              <View style={styles.topContainer}>
-                <TouchableOpacity style={styles.button}>
-                  <PurposePicker purpose={purpose} setPurpose={savePurpose} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
+            )}
+          </View>
           <View style={styles.rightContainer}>
             <TouchableOpacity>
               <MaterialIcons

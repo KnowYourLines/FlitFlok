@@ -65,7 +65,6 @@ export default function Page() {
     return (
       <View style={{ height: screenHeight, backgroundColor: "black" }}>
         <VideoPost
-          getLocation={getLocation}
           item={item}
           user={user}
           deleteVideoByIds={deleteVideoByIds}
