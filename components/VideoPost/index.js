@@ -308,7 +308,7 @@ export const VideoPost = forwardRef(
               } away, ${
                 timestamp === "in a few seconds" ? "just now" : timestamp
               }`}</Text>
-              {!purpose && item.properties.location_purpose && (
+              {item.properties.location_purpose && (
                 <Text style={styles.bottomText} numberOfLines={1}>
                   {`${item.properties.location_purpose}`}
                 </Text>
