@@ -6,6 +6,8 @@ import Button from "../../components/Button.js";
 import ChangeUsername from "../../components/ChangeUsername.js";
 import { auth } from "../../firebaseConfig.js";
 import SignIn from "../../components/SignIn.js";
+import NoInternet from "../../components/NoInternet.js";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export default function Page() {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
@@ -15,6 +17,10 @@ export default function Page() {
   const [userPoints, setUserPoints] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [displayName, setDisplayName] = useState(null);
+  const netInfo = useNetInfo();
+  if (!netInfo.isInternetReachable && netInfo.isInternetReachable !== null) {
+    return <NoInternet></NoInternet>;
+  }
 
   const getDisplayName = async (token) => {
     const response = await fetch(`${backendUrl}/display-name/`, {

@@ -17,7 +17,9 @@ import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
 import VideoPost from "../../components/VideoPost";
 import PurposePicker from "../../components/PurposePicker.js";
+import NoInternet from "../../components/NoInternet.js";
 import { setPurpose } from "../../redux/reel.js";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export default function Page() {
   const eula = useSelector((state) => state.eula.agreed);
@@ -32,6 +34,7 @@ export default function Page() {
   const [videos, setVideos] = useState([]);
   const mediaRefs = useRef([]);
   const flatListRef = useRef(null);
+  const netInfo = useNetInfo();
 
   const savePurpose = (value) => {
     dispatch(setPurpose(value));
@@ -150,6 +153,9 @@ export default function Page() {
   const openAppSettings = () => {
     Linking.openSettings();
   };
+  if (!netInfo.isInternetReachable && netInfo.isInternetReachable !== null) {
+    return <NoInternet></NoInternet>;
+  }
   if (!status) {
     return <View />;
   }

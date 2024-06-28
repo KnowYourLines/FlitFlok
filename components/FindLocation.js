@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import Button from "./Button.js";
 import { Fontisto } from "@expo/vector-icons";
 import PurposePicker from "./PurposePicker.js";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -21,6 +22,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [purpose, setPurpose] = useState("");
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
+  const netInfo = useNetInfo();
+
   useEffect(() => {
     (async () => {
       if (status && !status.granted && status.canAskAgain) {
@@ -152,66 +155,78 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                 title={isUploading ? "Uploading..." : "Post"}
                 disabled={isUploading}
                 onPress={async () => {
-                  setIsUploading(true);
-                  const token = await user.getIdToken(true);
-                  const response = await fetch(`${backendUrl}/video-upload/`, {
-                    method: "GET",
-                    headers: new Headers({
-                      Authorization: token,
-                    }),
-                  });
-                  const responseJson = await response.json();
-                  if (response.status != 200) {
-                    Alert.alert(`${response.status} error: ${responseJson}`);
+                  if (
+                    !netInfo.isInternetReachable &&
+                    netInfo.isInternetReachable !== null
+                  ) {
+                    Alert.alert(`No internet connection!`);
                   } else {
-                    const video = await fetch(videoUri);
-                    const file = await video.blob();
-                    const uploadUrl = responseJson.properties.url;
-                    const videoId = responseJson.properties.passthrough;
-
-                    const response = await fetch(uploadUrl, {
-                      method: "PUT",
-                      body: file,
-                      headers: { "content-type": file.type },
-                    });
+                    setIsUploading(true);
+                    const token = await user.getIdToken(true);
+                    const response = await fetch(
+                      `${backendUrl}/video-upload/`,
+                      {
+                        method: "GET",
+                        headers: new Headers({
+                          Authorization: token,
+                        }),
+                      }
+                    );
+                    const responseJson = await response.json();
                     if (response.status != 200) {
                       Alert.alert(`${response.status} error: ${responseJson}`);
-                      setIsUploading(false);
                     } else {
-                      const response = await fetch(
-                        `${backendUrl}/video/${videoId}/`,
-                        {
-                          method: "PATCH",
-                          headers: new Headers({
-                            Accept: "application/json",
-                            Authorization: token,
-                            "Content-Type": "application/json",
-                          }),
-                          body: JSON.stringify({
-                            location: {
-                              type: "Point",
-                              coordinates: [
-                                location.coords.longitude,
-                                location.coords.latitude,
-                              ],
-                            },
-                            address: selectedAddress?.address,
-                            place_name: selectedAddress?.name,
-                            location_purpose: purpose,
-                          }),
-                        }
-                      );
-                      if (response.status == 200) {
+                      const video = await fetch(videoUri);
+                      const file = await video.blob();
+                      const uploadUrl = responseJson.properties.url;
+                      const videoId = responseJson.properties.passthrough;
+
+                      const response = await fetch(uploadUrl, {
+                        method: "PUT",
+                        body: file,
+                        headers: { "content-type": file.type },
+                      });
+                      if (response.status != 200) {
                         Alert.alert(
-                          "Uploaded successfully. Post will appear after processing."
-                        );
-                        resetCamera();
-                      } else {
-                        const responseJson = await response.json();
-                        Alert.alert(
-                          `Upload failed! ${response.status} error: ${responseJson}`
+                          `${response.status} error: ${responseJson}`
                         );
                         setIsUploading(false);
+                      } else {
+                        const response = await fetch(
+                          `${backendUrl}/video/${videoId}/`,
+                          {
+                            method: "PATCH",
+                            headers: new Headers({
+                              Accept: "application/json",
+                              Authorization: token,
+                              "Content-Type": "application/json",
+                            }),
+                            body: JSON.stringify({
+                              location: {
+                                type: "Point",
+                                coordinates: [
+                                  location.coords.longitude,
+                                  location.coords.latitude,
+                                ],
+                              },
+                              address: selectedAddress?.address,
+                              place_name: selectedAddress?.name,
+                              location_purpose: purpose,
+                            }),
+                          }
+                        );
+                        if (response.status == 200) {
+                          Alert.alert(
+                            "Uploaded successfully. Post will appear after processing."
+                          );
+                          resetCamera();
+                        } else {
+                          const responseJson = await response.json();
+                          Alert.alert(
+                            `Upload failed! ${response.status} error: ${responseJson}`
+                          );
+                          setIsUploading(false);
+                        }
                       }
                     }
                   }
