@@ -166,10 +166,7 @@ export const VideoPost = forwardRef(
                       Alert.alert("Error", error);
                     });
                   });
-                  const destination =
-                    item.properties.address ||
-                    item.properties.place_name ||
-                    `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
+                  const destination = `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
                   const url = encodeURI(
                     `https://www.google.com/maps/dir/?api=1&destination=${destination}`
                   );

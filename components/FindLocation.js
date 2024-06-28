@@ -5,21 +5,17 @@ import {
   StyleSheet,
   Linking,
   TouchableOpacity,
-  FlatList,
   Alert,
 } from "react-native";
 import * as Location from "expo-location";
 import Button from "./Button.js";
-import { Fontisto } from "@expo/vector-icons";
 import PurposePicker from "./PurposePicker.js";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
-  const [addresses, setAddresses] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [location, setLocation] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [purpose, setPurpose] = useState("");
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
@@ -34,29 +30,6 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
           accuracy: Location.Accuracy.Balanced,
         });
         setLocation(location);
-        const locationAddresses = await Location.reverseGeocodeAsync({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-        const addresses = locationAddresses.map(function (locationAddress) {
-          const address = [
-            ...new Set([
-              locationAddress.streetNumber,
-              locationAddress.street,
-              locationAddress.district,
-              locationAddress.city,
-              locationAddress.subregion,
-              locationAddress.region,
-              locationAddress.country,
-              locationAddress.isoCountryCode,
-              locationAddress.postalCode,
-            ]),
-          ]
-            .filter((value) => value)
-            .join(", ");
-          return { name: locationAddress.name, address: address };
-        });
-        setAddresses(addresses);
       }
     })();
   }, [status]);
@@ -68,35 +41,6 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const openAppSettings = () => {
     Linking.openSettings();
   };
-
-  const toggleItemSelection = (item) => {
-    if (selectedAddress && selectedAddress.address === item.address) {
-      setSelectedAddress(null);
-    } else {
-      setSelectedAddress(item);
-    }
-  };
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => toggleItemSelection(item)}
-    >
-      <Text style={styles.itemTitle}>
-        {selectedAddress && selectedAddress.address === item.address && (
-          <Fontisto name="checkbox-active" size={28} color="black" />
-        )}
-        {selectedAddress && selectedAddress.address !== item.address && (
-          <Fontisto name="checkbox-passive" size={28} color="black" />
-        )}
-        {!selectedAddress && (
-          <Fontisto name="checkbox-passive" size={28} color="black" />
-        )}{" "}
-        {item.name}
-      </Text>
-      <Text style={styles.itemSubtitle}>{item.address}</Text>
-    </TouchableOpacity>
-  );
 
   if (!status) {
     return <View />;
@@ -129,21 +73,16 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   return (
     <View style={styles.container}>
       {location ? (
-        <View style={styles.messageContainer}>
-          <Text
-            style={styles.coords}
-          >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
-          <Text style={styles.text}>Address (if any):</Text>
-          <FlatList
-            data={addresses}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.address}
-            extraData={selectedAddress}
-          />
-          <Text style={styles.text}>Purpose (if any):</Text>
-          <TouchableOpacity style={styles.button}>
-            <PurposePicker purpose={purpose} setPurpose={setPurpose} />
-          </TouchableOpacity>
+        <View>
+          <View style={styles.bodyContainer}>
+            <Text
+              style={styles.coords}
+            >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
+            <Text style={styles.text}>Purpose (if any):</Text>
+            <TouchableOpacity style={styles.button}>
+              <PurposePicker purpose={purpose} setPurpose={setPurpose} />
+            </TouchableOpacity>
+          </View>
           <View style={styles.footer}>
             <View style={styles.buttonContainer}>
               <Button
@@ -209,8 +148,6 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                                   location.coords.latitude,
                                 ],
                               },
-                              address: selectedAddress?.address,
-                              place_name: selectedAddress?.name,
                               location_purpose: purpose,
                             }),
                           }
@@ -255,13 +192,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 100,
-    marginTop: "40%",
+    marginTop: "100%",
   },
   footer: {
     flex: 1,
     justifyContent: "flex-end",
   },
-  messageContainer: {
+  bodyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
