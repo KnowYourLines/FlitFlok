@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 100,
-    marginTop: "100%",
+    marginTop: "85%",
   },
   footer: {
     flex: 1,
