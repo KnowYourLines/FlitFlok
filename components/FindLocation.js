@@ -8,6 +8,7 @@ import {
   Alert,
 } from "react-native";
 import * as Location from "expo-location";
+import * as tus from "tus-js-client";
 import Button from "./Button.js";
 import PurposePicker from "./PurposePicker.js";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -102,70 +103,41 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                   } else {
                     setIsUploading(true);
                     const token = await user.getIdToken(true);
-                    const response = await fetch(
-                      `${backendUrl}/video-upload/`,
-                      {
-                        method: "GET",
-                        headers: new Headers({
-                          Authorization: token,
-                        }),
-                      }
-                    );
-                    const responseJson = await response.json();
-                    if (response.status != 200) {
-                      Alert.alert(`${response.status} error: ${responseJson}`);
-                    } else {
-                      const video = await fetch(videoUri);
-                      const file = await video.blob();
-                      const uploadUrl = responseJson.properties.url;
-                      const videoId = responseJson.properties.passthrough;
-
-                      const response = await fetch(uploadUrl, {
-                        method: "PUT",
-                        body: file,
-                        headers: { "content-type": file.type },
-                      });
-                      if (response.status != 200) {
-                        Alert.alert(
-                          `${response.status} error: ${responseJson}`
+                    const video = await fetch(videoUri);
+                    const file = await video.blob();
+                    var options = {
+                      endpoint: `${backendUrl}/video-upload/`,
+                      headers: {
+                        Authorization: token,
+                      },
+                      chunkSize: 5 * 1024 * 1024, // Required a minimum chunk size of 5MB, here we use 50MB.
+                      retryDelays: [0, 3000, 5000, 10000, 20000], // Indicates to tus-js-client the delays after which it will retry if the upload fails
+                      onError: function (error) {
+                        console.log("Failed because: " + error);
+                      },
+                      onProgress: function (bytesUploaded, bytesTotal) {
+                        var percentage = (
+                          (bytesUploaded / bytesTotal) *
+                          100
+                        ).toFixed(2);
+                        console.log(
+                          bytesUploaded,
+                          bytesTotal,
+                          percentage + "%"
                         );
+                      },
+                      onSuccess: function () {
+                        console.log("Upload finished");
                         setIsUploading(false);
-                      } else {
-                        const response = await fetch(
-                          `${backendUrl}/video/${videoId}/`,
-                          {
-                            method: "PATCH",
-                            headers: new Headers({
-                              Accept: "application/json",
-                              Authorization: token,
-                              "Content-Type": "application/json",
-                            }),
-                            body: JSON.stringify({
-                              location: {
-                                type: "Point",
-                                coordinates: [
-                                  location.coords.longitude,
-                                  location.coords.latitude,
-                                ],
-                              },
-                              location_purpose: purpose,
-                            }),
-                          }
-                        );
-                        if (response.status == 200) {
-                          Alert.alert(
-                            "Uploaded successfully. Post will appear after processing."
-                          );
-                          resetCamera();
-                        } else {
-                          const responseJson = await response.json();
-                          Alert.alert(
-                            `Upload failed! ${response.status} error: ${responseJson}`
-                          );
-                          setIsUploading(false);
-                        }
-                      }
-                    }
+                      },
+                      onAfterResponse: function (req, res) {
+                        var mediaIdHeader = res.getHeader("stream-media-id");
+                        console.log(mediaIdHeader);
+                      },
+                    };
+
+                    var upload = new tus.Upload(file, options);
+                    upload.start();
                   }
                 }}
               />
