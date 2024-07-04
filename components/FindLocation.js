@@ -110,6 +110,11 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                       headers: {
                         Authorization: token,
                       },
+                      metadata: {
+                        ...(purpose ? { purpose: purpose } : {}),
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                      },
                       chunkSize: 5 * 1024 * 1024, // Required a minimum chunk size of 5MB, here we use 50MB.
                       retryDelays: [0, 3000, 5000, 10000, 20000], // Indicates to tus-js-client the delays after which it will retry if the upload fails
                       onError: function (error) {
@@ -132,7 +137,9 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                       },
                       onAfterResponse: function (req, res) {
                         var mediaIdHeader = res.getHeader("stream-media-id");
-                        console.log(mediaIdHeader);
+                        if (mediaIdHeader) {
+                          console.log(mediaIdHeader);
+                        }
                       },
                     };
 
