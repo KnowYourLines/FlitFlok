@@ -17,6 +17,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [isUploading, setIsUploading] = useState(false);
   const [location, setLocation] = useState(null);
+  const [currentUpload, setCurrentUpload] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState("0.00%");
   const [purpose, setPurpose] = useState("");
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
@@ -37,6 +39,15 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
 
   const handleBackButton = () => {
     setVideoApproved(false);
+    if (currentUpload) {
+      currentUpload.abort();
+    }
+  };
+
+  const handleCancelButton = () => {
+    currentUpload.abort();
+    setCurrentUpload(null);
+    setIsUploading(false);
   };
 
   const openAppSettings = () => {
@@ -73,7 +84,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
 
   return (
     <View style={styles.container}>
-      {location ? (
+      {location && !currentUpload && (
         <View>
           <View style={styles.bodyContainer}>
             <Text
@@ -92,7 +103,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                 onPress={handleBackButton}
               />
               <Button
-                title={isUploading ? "Uploading..." : "Post"}
+                title={"Post"}
                 disabled={isUploading}
                 onPress={async () => {
                   if (
@@ -105,7 +116,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                     const token = await user.getIdToken(true);
                     const video = await fetch(videoUri);
                     const file = await video.blob();
-                    var options = {
+                    const options = {
                       endpoint: `${backendUrl}/video-upload/`,
                       headers: {
                         Authorization: token,
@@ -115,43 +126,82 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
                       },
-                      chunkSize: 5 * 1024 * 1024, // Required a minimum chunk size of 5MB, here we use 50MB.
-                      retryDelays: [0, 3000, 5000, 10000, 20000], // Indicates to tus-js-client the delays after which it will retry if the upload fails
+                      chunkSize: 5 * 1024 * 1024,
+                      retryDelays: [0, 3000, 5000, 10000, 20000],
                       onError: function (error) {
-                        console.log("Failed because: " + error);
+                        Alert.alert("Upload failed because: " + error);
                       },
                       onProgress: function (bytesUploaded, bytesTotal) {
-                        var percentage = (
+                        const percentage = (
                           (bytesUploaded / bytesTotal) *
                           100
                         ).toFixed(2);
-                        console.log(
-                          bytesUploaded,
-                          bytesTotal,
-                          percentage + "%"
-                        );
+                        setUploadProgress(percentage + "%");
                       },
                       onSuccess: function () {
-                        console.log("Upload finished");
                         setIsUploading(false);
-                      },
-                      onAfterResponse: function (req, res) {
-                        var mediaIdHeader = res.getHeader("stream-media-id");
-                        if (mediaIdHeader) {
-                          console.log(mediaIdHeader);
-                        }
+                        Alert.alert(
+                          "Uploaded successfully. Post will appear after processing."
+                        );
+                        resetCamera();
                       },
                     };
-
-                    var upload = new tus.Upload(file, options);
+                    const upload = new tus.Upload(file, options);
                     upload.start();
+                    setCurrentUpload(upload);
                   }
                 }}
               />
             </View>
           </View>
         </View>
-      ) : (
+      )}
+      {location && currentUpload && (
+        <View>
+          <View style={styles.bodyContainer}>
+            <Text style={styles.text}>{`${uploadProgress} uploaded`}</Text>
+          </View>
+          <View style={styles.footer}>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Cancel"
+                color={"#2196F3"}
+                onPress={handleCancelButton}
+              />
+              {isUploading ? (
+                <Button
+                  title={"Pause"}
+                  onPress={async () => {
+                    setIsUploading(false);
+                    currentUpload.abort();
+                  }}
+                />
+              ) : (
+                <Button
+                  title={"Resume"}
+                  onPress={() => {
+                    setIsUploading(true);
+                    currentUpload
+                      .findPreviousUploads()
+                      .then(function (previousUploads) {
+                        // Found previous uploads so we select the first one.
+                        if (previousUploads.length) {
+                          currentUpload.resumeFromPreviousUpload(
+                            previousUploads[0]
+                          );
+                        }
+
+                        // Start the upload
+                        currentUpload.start();
+                      });
+                  }}
+                />
+              )}
+            </View>
+          </View>
+        </View>
+      )}
+      {!location && (
         <Text style={styles.subtitle}>Finding your location...</Text>
       )}
     </View>
