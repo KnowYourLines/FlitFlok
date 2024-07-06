@@ -123,7 +123,7 @@ export const VideoPost = forwardRef(
             isLooping
             usePoster
             posterSource={{
-              uri: `https://image.mux.com/${item.properties.playback_id}/thumbnail.png`,
+              uri: item.properties.thumbnail,
             }}
             posterStyle={{
               flex: 1,
@@ -132,7 +132,7 @@ export const VideoPost = forwardRef(
               resizeMode: "cover",
             }}
             source={{
-              uri: `https://stream.mux.com/${item.properties.playback_id}.m3u8?max_resolution=720p`,
+              uri: item.properties.hls,
             }}
             onPlaybackStatusUpdate={(status) => {
               setStatus(status);
