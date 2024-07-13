@@ -127,9 +127,12 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                         longitude: location.coords.longitude,
                       },
                       chunkSize: 5 * 1024 * 1024,
-                      retryDelays: [0, 3000, 5000, 10000, 20000],
+                      retryDelays: [0, 1000, 3000, 5000, 10000, 15000],
                       onError: function (error) {
-                        Alert.alert("Upload failed because: " + error);
+                        setIsUploading(false);
+                        Alert.alert(
+                          "Please try again. Upload failed because: " + error
+                        );
                       },
                       onProgress: function (bytesUploaded, bytesTotal) {
                         const percentage = (
