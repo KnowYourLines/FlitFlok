@@ -79,7 +79,7 @@ export default function Page() {
             being helpful
           </Text>
           <Text style={styles.infoText}>
-            <Text style={styles.boldText}>+10000 points</Text> for a post with
+            <Text style={styles.boldText}>+1000 points</Text> for a post with
             no posts from any others around
           </Text>
           <Text style={styles.infoText}>
