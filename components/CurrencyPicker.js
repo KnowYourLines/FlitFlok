@@ -1,15 +1,15 @@
 import React from "react";
 import RNPickerSelect from "react-native-picker-select";
 
-export default function PurposePicker({ purpose, setPurpose }) {
+export default function CurrencyPicker({ currency, setCurrency }) {
   return (
     <RNPickerSelect
       placeholder={{
-        label: purpose || "No location purpose selected",
-        value: purpose || "",
+        label: currency || "No currency selected",
+        value: currency || "",
       }}
-      selectedValue={purpose}
-      onValueChange={(value) => setPurpose(value)}
+      selectedValue={currency}
+      onValueChange={(value) => setCurrency(value)}
       useNativeAndroidPickerStyle={false}
       textInputProps={{
         style: { color: "white", fontSize: 16, fontWeight: "bold" },
@@ -23,8 +23,8 @@ export default function PurposePicker({ purpose, setPurpose }) {
         { label: "Landmarks & Attractions", value: "Landmarks & Attractions" },
         { label: "Shopping", value: "Shopping" },
         { label: "Facilities & Services", value: "Facilities & Services" },
-        { label: "No location purpose selected", value: "" },
-      ].filter((item) => item.value != purpose)}
+        { label: "No currency selected", value: "" },
+      ].filter((item) => item.value != currency)}
     />
   );
 }

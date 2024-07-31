@@ -40,16 +40,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  topContainer: {
-    position: "absolute",
-    justifyContent: "top",
-    alignItems: "center",
-    top: "7.5%",
-  },
-  button: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 10,
-    borderRadius: 5,
-  },
 });
 export default styles;

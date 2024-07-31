@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import * as Location from "expo-location";
 import * as tus from "tus-js-client";
 import Button from "./Button.js";
-import PurposePicker from "./PurposePicker.js";
+import CurrencyPicker from "./CurrencyPicker.js";
+import { setCode } from "../redux/currency.js";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
@@ -19,9 +21,14 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [location, setLocation] = useState(null);
   const [currentUpload, setCurrentUpload] = useState(null);
   const [uploadProgress, setUploadProgress] = useState("0.00%");
-  const [purpose, setPurpose] = useState("");
+  const currency = useSelector((state) => state.currency.code);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
+  const dispatch = useDispatch();
+
+  const saveCurrency = (value) => {
+    dispatch(setCode(value));
+  };
 
   useEffect(() => {
     (async () => {
@@ -90,9 +97,9 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
             <Text
               style={styles.coords}
             >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
-            <Text style={styles.text}>Purpose (if any):</Text>
+            <Text style={styles.text}>Currency:</Text>
             <TouchableOpacity style={styles.button}>
-              <PurposePicker purpose={purpose} setPurpose={setPurpose} />
+              <CurrencyPicker currency={currency} setCurrency={saveCurrency} />
             </TouchableOpacity>
           </View>
           <View style={styles.footer}>
@@ -122,7 +129,6 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                         Authorization: token,
                       },
                       metadata: {
-                        ...(purpose ? { purpose: purpose } : {}),
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
                       },

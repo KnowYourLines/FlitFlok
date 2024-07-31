@@ -7,7 +7,6 @@ import {
   Linking,
   FlatList,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
@@ -16,14 +15,11 @@ import { agreeEula } from "../../redux/eula.js";
 import EULA from "../../components/EULA.js";
 import * as Location from "expo-location";
 import VideoPost from "../../components/VideoPost";
-import PurposePicker from "../../components/PurposePicker.js";
 import NoInternet from "../../components/NoInternet.js";
-import { setPurpose } from "../../redux/reel.js";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 export default function Page() {
   const eula = useSelector((state) => state.eula.agreed);
-  const purpose = useSelector((state) => state.reel.purpose);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const screenHeight = Dimensions.get("window").height;
   const dispatch = useDispatch();
@@ -35,10 +31,6 @@ export default function Page() {
   const mediaRefs = useRef([]);
   const flatListRef = useRef(null);
   const netInfo = useNetInfo();
-
-  const savePurpose = (value) => {
-    dispatch(setPurpose(value));
-  };
 
   /**
    * Called any time a new post is shown when a user scrolls
@@ -71,8 +63,6 @@ export default function Page() {
           item={item}
           user={user}
           deleteVideoByIds={deleteVideoByIds}
-          purpose={purpose}
-          savePurpose={savePurpose}
           ref={(VideoPostRef) => (mediaRefs.current[item.id] = VideoPostRef)}
         />
       </View>
@@ -106,9 +96,6 @@ export default function Page() {
       if (user && location) {
         const token = await user.getIdToken(true);
         let requestUrl = `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}`;
-        if (purpose) {
-          requestUrl += `&purpose=${encodeURIComponent(purpose)}`;
-        }
         const response = await fetch(requestUrl, {
           method: "GET",
           headers: new Headers({
@@ -129,7 +116,7 @@ export default function Page() {
         }
       }
     })();
-  }, [user, location, purpose]);
+  }, [user, location]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -190,13 +177,6 @@ export default function Page() {
   if (videos.length == 0) {
     return (
       <View style={styles.messageContainer}>
-        <View style={styles.buttonContainer}>
-          <View style={styles.topContainer}>
-            <TouchableOpacity style={styles.button}>
-              <PurposePicker purpose={purpose} setPurpose={savePurpose} />
-            </TouchableOpacity>
-          </View>
-        </View>
         <Text style={styles.subtitle}>Finding videos posted around you...</Text>
       </View>
     );
@@ -230,9 +210,6 @@ export default function Page() {
             const lastVideo = videos[videos.length - 1];
             const token = await user.getIdToken(true);
             let requestUrl = `${backendUrl}/video/?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_video=${lastVideo.id}`;
-            if (purpose) {
-              requestUrl += `&purpose=${encodeURIComponent(purpose)}`;
-            }
             const response = await fetch(requestUrl, {
               method: "GET",
               headers: new Headers({

@@ -11,7 +11,6 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import styles from "./styles";
 import moment from "moment";
-import PurposePicker from "../PurposePicker.js";
 
 /**
  * This component is responsible for displaying a post and play the
@@ -21,7 +20,7 @@ import PurposePicker from "../PurposePicker.js";
  * can manage the play status of the video.
  */
 export const VideoPost = forwardRef(
-  ({ user, item, deleteVideoByIds, purpose, savePurpose }, parentRef) => {
+  ({ user, item, deleteVideoByIds }, parentRef) => {
     const [status, setStatus] = useState(null);
     const [timestamp, setTimestamp] = useState(
       moment.unix(item.properties.posted_at).fromNow()
@@ -140,11 +139,6 @@ export const VideoPost = forwardRef(
           />
 
           <View style={styles.buttonContainer}>
-            <View style={styles.topContainer}>
-              <TouchableOpacity style={styles.button}>
-                <PurposePicker purpose={purpose} setPurpose={savePurpose} />
-              </TouchableOpacity>
-            </View>
             {status && !status.isPlaying && status.isLoaded && (
               <AntDesign name="playcircleo" size={120} color="white" />
             )}
@@ -305,11 +299,6 @@ export const VideoPost = forwardRef(
               } away, ${
                 timestamp === "in a few seconds" ? "just now" : timestamp
               }`}</Text>
-              {item.properties.location_purpose && (
-                <Text style={styles.bottomText} numberOfLines={1}>
-                  {`${item.properties.location_purpose}`}
-                </Text>
-              )}
             </View>
           </View>
         </View>
