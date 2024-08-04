@@ -6,6 +6,7 @@ import {
   Linking,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as Location from "expo-location";
@@ -21,6 +22,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [location, setLocation] = useState(null);
   const [currentUpload, setCurrentUpload] = useState(null);
   const [uploadProgress, setUploadProgress] = useState("0.00%");
+  const [amountSpent, setAmountSpent] = useState("");
   const currency = useSelector((state) => state.currency.code);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
@@ -101,6 +103,14 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
             <TouchableOpacity style={styles.button}>
               <CurrencyPicker currency={currency} setCurrency={saveCurrency} />
             </TouchableOpacity>
+            <Text style={styles.text}>Amount Spent:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={setAmountSpent}
+              value={amountSpent}
+              keyboardType="numeric"
+              returnKeyType="done"
+            />
           </View>
           <View style={styles.footer}>
             <View style={styles.buttonContainer}>
@@ -118,6 +128,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                     netInfo.isInternetReachable !== null
                   ) {
                     Alert.alert(`No internet connection!`);
+                  } else if (!currency || !amountSpent) {
+                    Alert.alert(`Currency and amount required!`);
                   } else {
                     setIsUploading(true);
                     const token = await user.getIdToken(true);
@@ -131,6 +143,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                       metadata: {
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
+                        currency: currency,
+                        money_spent: amountSpent,
                       },
                       chunkSize: 5 * 1024 * 1024,
                       retryDelays: [0, 1000, 3000, 5000, 10000, 15000],
@@ -218,11 +232,24 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
 };
 
 const styles = StyleSheet.create({
+  input: {
+    width: 200,
+    height: 50,
+    padding: 10,
+    fontSize: 18,
+    color: "#333",
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    textAlign: "center",
+  },
   button: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     marginTop: 10,
     padding: 10,
     borderRadius: 5,
+    marginBottom: 10,
   },
   buttonContainer: {
     flex: 1,
