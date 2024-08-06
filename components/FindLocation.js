@@ -108,7 +108,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
               style={styles.input}
               onChangeText={setAmountSpent}
               value={amountSpent}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               returnKeyType="done"
             />
           </View>
@@ -123,6 +123,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                 title={"Post"}
                 disabled={isUploading}
                 onPress={async () => {
+                  const currencyRegEx = /^\d+\.{0,1}\d{0,2}$/;
                   if (
                     !netInfo.isInternetReachable &&
                     netInfo.isInternetReachable !== null
@@ -130,6 +131,10 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                     Alert.alert(`No internet connection!`);
                   } else if (!currency || !amountSpent) {
                     Alert.alert(`Currency and amount required!`);
+                  } else if (!currencyRegEx.test(amountSpent)) {
+                    Alert.alert(
+                      `Invalid amount entered. Only numbers followed by . allowed!`
+                    );
                   } else {
                     setIsUploading(true);
                     const token = await user.getIdToken(true);
