@@ -129,7 +129,7 @@ export default function Page() {
             setShowRecord(true);
           }}
           style={styles.camera}
-          type={Camera.Constants.Type.back}
+          type={Camera.Constants.Type.front}
           ref={(ref) => setCameraRef(ref)}
         >
           {showRecord && (
