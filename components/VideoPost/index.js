@@ -289,10 +289,10 @@ export const VideoPost = forwardRef(
           <View style={styles.bottomContainer}>
             <View>
               <Text style={styles.bottomText} numberOfLines={1}>
-                {`${item.properties.display_name || item.properties.creator}`}
+                {`${item.properties.display_name || item.properties.starring}`}
               </Text>
               <Text style={styles.bottomText} numberOfLines={1}>
-                {`#${item.properties.creator_rank} Most Helpful Explorer`}
+                {`#${item.properties.starring_rank} Most Helpful Explorer`}
               </Text>
               <Text
                 style={styles.bottomText}
