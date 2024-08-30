@@ -10,19 +10,14 @@ import {
 } from "react-native";
 import { auth } from "../firebaseConfig.js";
 
-export default function SendBuddyRequest({
-  showModal,
-  setShowModal,
-}) {
+export default function SendBuddyRequest({ showModal, setShowModal }) {
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const [username, setUsername] = useState("");
   return (
     <Modal animationType="slide" transparent={true} visible={showModal}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            Enter your buddy's username
-          </Text>
+          <Text style={styles.modalText}>Enter your buddy's username</Text>
           <TextInput
             style={styles.input}
             placeholder="Buddy Username"
@@ -46,8 +41,8 @@ export default function SendBuddyRequest({
                       display_name: username,
                     }),
                   });
-                  const responseJson = await response.json();
-                  if (response.status != 200) {
+                  if (response.status != 201) {
+                    const responseJson = await response.json();
                     Alert.alert(
                       `${response.status} error: ${responseJson.display_name[0]}`
                     );
