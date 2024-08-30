@@ -4,6 +4,7 @@ import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Button from "../../components/Button.js";
 import ChangeUsername from "../../components/ChangeUsername.js";
+import SendBuddyRequest from "../../components/SendBuddyRequest.js";
 import { auth } from "../../firebaseConfig.js";
 import SignIn from "../../components/SignIn.js";
 import NoInternet from "../../components/NoInternet.js";
@@ -16,6 +17,7 @@ export default function Page() {
   const [userRank, setUserRank] = useState(null);
   const [userPoints, setUserPoints] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showSendBuddyRequest, setShowSendBuddyRequest] = useState(false);
   const [displayName, setDisplayName] = useState(null);
   const netInfo = useNetInfo();
   if (!netInfo.isInternetReachable && netInfo.isInternetReachable !== null) {
@@ -66,6 +68,10 @@ export default function Page() {
         setShowModal={setShowModal}
         getDisplayName={getDisplayName}
       />
+      <SendBuddyRequest
+        showModal={showSendBuddyRequest}
+        setShowModal={setShowSendBuddyRequest}
+      />
       {user && user.emailVerified && (
         <View style={styles.main}>
           <Text style={styles.title}>Hello</Text>
@@ -85,6 +91,13 @@ export default function Page() {
             <Text style={styles.boldText}>popularly posted areas</Text>
           </Text>
           <View style={styles.footer}>
+            <Button
+              title={"Send Buddy Request"}
+              color="#2196F3"
+              onPress={() => {
+                setShowSendBuddyRequest(true);
+              }}
+            />
             <Button
               title={"Change Username"}
               color="#2196F3"
