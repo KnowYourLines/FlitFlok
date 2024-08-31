@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import eulaReducer from "./eula";
 import currencyReducer from "./currency";
+import starringReducer from "./starring";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   persistReducer,
@@ -20,7 +21,11 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(
   persistConfig,
-  combineReducers({ eula: eulaReducer, currency: currencyReducer })
+  combineReducers({
+    eula: eulaReducer,
+    currency: currencyReducer,
+    starring: starringReducer,
+  })
 );
 
 export const store = configureStore({

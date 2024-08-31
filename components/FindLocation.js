@@ -15,6 +15,7 @@ import Button from "./Button.js";
 import CurrencyPicker from "./CurrencyPicker.js";
 import StarringPicker from "./StarringPicker.js";
 import { setCode } from "../redux/currency.js";
+import { setBuddy } from "../redux/starring.js";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
@@ -24,11 +25,15 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [currentUpload, setCurrentUpload] = useState(null);
   const [uploadProgress, setUploadProgress] = useState("0.00%");
   const [amountSpent, setAmountSpent] = useState("");
-  const [starring, setStarring] = useState("");
   const currency = useSelector((state) => state.currency.code);
+  const starring = useSelector((state) => state.starring.buddy);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
+
+  const saveStarring = (value) => {
+    dispatch(setBuddy(value));
+  };
 
   const saveCurrency = (value) => {
     dispatch(setCode(value));
@@ -105,7 +110,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
             <TouchableOpacity style={styles.button}>
               <StarringPicker
                 starring={starring}
-                setStarring={setStarring}
+                setStarring={saveStarring}
                 user={user}
               />
             </TouchableOpacity>
