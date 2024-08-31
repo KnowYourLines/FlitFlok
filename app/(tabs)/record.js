@@ -14,10 +14,12 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
+import BuddiesRequired from "../../components/BuddiesRequired.js";
 import UnverifiedUser from "../../components/UnverifiedUser.js";
 import FindLocation from "../../components/FindLocation.js";
 
 export default function Page() {
+  const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const [camStatus, requestCamPermission] = Camera.useCameraPermissions();
   const [micStatus, requestMicPermission] = Camera.useMicrophonePermissions();
   const [cameraRef, setCameraRef] = useState(null);
@@ -28,6 +30,7 @@ export default function Page() {
   const [videoApproved, setVideoApproved] = useState(false);
   const [user, setUser] = useState(null);
   const [recordingFullyDenied, setRecordingFullyDenied] = useState(false);
+  const [buddies, setBuddies] = useState(["placeholder"]);
   const videoRef = useRef(null);
 
   onAuthStateChanged(auth, (user) => {
@@ -35,6 +38,28 @@ export default function Page() {
       setUser(user);
     }
   });
+
+  const getBuddies = async () => {
+    const token = await auth.currentUser.getIdToken(true);
+    const response = await fetch(`${backendUrl}/buddies/`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: token,
+      }),
+    });
+    const responseJson = await response.json();
+    if (response.status != 200) {
+      Alert.alert(`${response.status} error: ${responseJson}`);
+    } else {
+      setBuddies(responseJson);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getBuddies();
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -90,6 +115,10 @@ export default function Page() {
     return <UnverifiedUser></UnverifiedUser>;
   }
 
+  if (buddies.length == 0) {
+    return <BuddiesRequired></BuddiesRequired>;
+  }
+
   if (
     (!camStatus.granted && !camStatus.canAskAgain) ||
     (!micStatus.granted && !micStatus.canAskAgain)
@@ -129,7 +158,7 @@ export default function Page() {
             setShowRecord(true);
           }}
           style={styles.camera}
-          type={Camera.Constants.Type.front}
+          type={Camera.Constants.Type.back}
           ref={(ref) => setCameraRef(ref)}
         >
           {showRecord && (
