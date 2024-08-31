@@ -13,6 +13,7 @@ import * as Location from "expo-location";
 import * as tus from "tus-js-client";
 import Button from "./Button.js";
 import CurrencyPicker from "./CurrencyPicker.js";
+import StarringPicker from "./StarringPicker.js";
 import { setCode } from "../redux/currency.js";
 import { useNetInfo } from "@react-native-community/netinfo";
 
@@ -23,6 +24,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
   const [currentUpload, setCurrentUpload] = useState(null);
   const [uploadProgress, setUploadProgress] = useState("0.00%");
   const [amountSpent, setAmountSpent] = useState("");
+  const [starring, setStarring] = useState("");
   const currency = useSelector((state) => state.currency.code);
   const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const netInfo = useNetInfo();
@@ -99,6 +101,14 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
             <Text
               style={styles.coords}
             >{`Latitude: ${location.coords.latitude}\nLongitude: ${location.coords.longitude}\n`}</Text>
+            <Text style={styles.text}>Buddy:</Text>
+            <TouchableOpacity style={styles.button}>
+              <StarringPicker
+                starring={starring}
+                setStarring={setStarring}
+                user={user}
+              />
+            </TouchableOpacity>
             <Text style={styles.text}>Currency:</Text>
             <TouchableOpacity style={styles.button}>
               <CurrencyPicker currency={currency} setCurrency={saveCurrency} />
@@ -129,6 +139,8 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                     netInfo.isInternetReachable !== null
                   ) {
                     Alert.alert(`No internet connection!`);
+                  } else if (!starring) {
+                    Alert.alert(`No buddy specified!`);
                   } else if (!currency || !amountSpent) {
                     Alert.alert(`Currency and amount required!`);
                   } else if (!currencyRegEx.test(amountSpent)) {
@@ -150,6 +162,7 @@ const FindLocation = ({ setVideoApproved, resetCamera, videoUri, user }) => {
                         longitude: location.coords.longitude,
                         currency: currency,
                         money_spent: amountSpent,
+                        starring_firebase_uid: starring,
                       },
                       chunkSize: 5 * 1024 * 1024,
                       retryDelays: [0, 1000, 3000, 5000, 10000, 15000],
